@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="容器,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="什么是PrometheusPrometheus是一个非常优秀的监控工具. 它提供了数据搜集, 存储, 处理, 可视化和告警一套完整的解决方案. 如下是Prometheus的架构图:  重要的有几点:  Exporters: Prometheus的客户端, 负责收集主机监控数据 Prometheus Server: Prometheus的服务端, 从Exporter拉取与存储数据, 并提供一套灵活的">
+<meta name="keywords" content="容器">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TKE使用Prometheus">
+<meta property="og:url" content="https://staight.github.io/2019/09/10/TKE使用Prometheus/index.html">
+<meta property="og:site_name" content="staight">
+<meta property="og:description" content="什么是PrometheusPrometheus是一个非常优秀的监控工具. 它提供了数据搜集, 存储, 处理, 可视化和告警一套完整的解决方案. 如下是Prometheus的架构图:  重要的有几点:  Exporters: Prometheus的客户端, 负责收集主机监控数据 Prometheus Server: Prometheus的服务端, 从Exporter拉取与存储数据, 并提供一套灵活的">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://staight.github.io/2019/09/10/TKE使用Prometheus/Prometheus%E6%9E%B6%E6%9E%84.webp">
+<meta property="og:image" content="https://staight.github.io/2019/09/10/TKE使用Prometheus/kube-prometheus%E6%9E%B6%E6%9E%84.webp">
+<meta property="og:image" content="https://staight.github.io/2019/09/10/TKE使用Prometheus/%E5%85%AC%E7%BD%91%E8%AE%BF%E9%97%AEgrafana.png">
+<meta property="og:image" content="https://staight.github.io/2019/09/10/TKE使用Prometheus/%E5%85%AC%E7%BD%91%E8%AE%BF%E9%97%AEgrafana2.png">
+<meta property="og:image" content="https://staight.github.io/2019/09/10/TKE使用Prometheus/%E8%AE%BF%E9%97%AEgrafana.png">
+<meta property="og:image" content="https://staight.github.io/2019/09/10/TKE使用Prometheus/%E8%AE%BF%E9%97%AEgrafana2.png">
+<meta property="og:image" content="https://staight.github.io/2019/09/10/TKE使用Prometheus/%E8%AE%BF%E9%97%AEgrafana3.png">
+<meta property="og:image" content="https://staight.github.io/2019/09/10/TKE使用Prometheus/%E7%9B%91%E6%8E%A7k8s.png">
+<meta property="og:image" content="https://staight.github.io/2019/09/10/TKE使用Prometheus/%E7%9B%91%E6%8E%A7k8s2.png">
+<meta property="og:updated_time" content="2019-09-27T14:18:27.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="TKE使用Prometheus">
+<meta name="twitter:description" content="什么是PrometheusPrometheus是一个非常优秀的监控工具. 它提供了数据搜集, 存储, 处理, 可视化和告警一套完整的解决方案. 如下是Prometheus的架构图:  重要的有几点:  Exporters: Prometheus的客户端, 负责收集主机监控数据 Prometheus Server: Prometheus的服务端, 从Exporter拉取与存储数据, 并提供一套灵活的">
+<meta name="twitter:image" content="https://staight.github.io/2019/09/10/TKE使用Prometheus/Prometheus%E6%9E%B6%E6%9E%84.webp">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://staight.github.io/2019/09/10/TKE使用Prometheus/">
+
+
+
+
+
+  <title>TKE使用Prometheus | staight</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">staight</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sundries">
+          <a href="/sundries/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>
+            
+            Sundries
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://staight.github.io/2019/09/10/TKE使用Prometheus/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="staight">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="staight">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">TKE使用Prometheus</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-09-10T17:26:44+08:00">
+                2019-09-10
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Post modified&#58;</span>
+              
+              <time title="Post modified" itemprop="dateModified" datetime="2019-09-27T22:18:27+08:00">
+                2019-09-27
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="什么是Prometheus"><a href="#什么是Prometheus" class="headerlink" title="什么是Prometheus"></a>什么是Prometheus</h2><p>Prometheus是一个非常优秀的监控工具. 它提供了数据搜集, 存储, 处理, 可视化和告警一套完整的解决方案. 如下是Prometheus的架构图:</p>
+<p><img src="Prometheus%E6%9E%B6%E6%9E%84.webp" alt="Prometheus架构"></p>
+<p>重要的有几点:</p>
+<ol>
+<li>Exporters: Prometheus的客户端, 负责收集主机监控数据</li>
+<li>Prometheus Server: Prometheus的服务端, 从Exporter拉取与存储数据, 并提供一套灵活的查询语言供用户使用</li>
+<li>Alertmanager: 定义监控数据的告警规则</li>
+<li>Web UI: 可视化组件, 目前最优秀的可视化组件是Grafana</li>
+</ol>
+<h2 id="什么是kube-prometheus"><a href="#什么是kube-prometheus" class="headerlink" title="什么是kube-prometheus"></a>什么是kube-prometheus</h2><p>kube-prometheus是一个使用Prometheus来监控Kubernetes的项目, 目前由coreos维护. 它将Prometheus的各个组件全部容器化, 以k8s资源的方式部署在k8s上</p>
+<p>kube-prometheus的架构图:</p>
+<p><img src="kube-prometheus%E6%9E%B6%E6%9E%84.webp" alt="kube-prometheus架构"></p>
+<p>如上每个对象都是k8s中的资源:</p>
+<ol>
+<li>Service: 即k8s中的Service资源, 是Prometheus要监控的对象</li>
+<li>ServiceMonitor: 是Service的抽象, 代表一类Service. 就像Node包含Node1, Node2一样</li>
+<li>Operator: kube-prometheus的枢纽, 一方面部署和管理Prometheus Server, 另一方面根据ServiceMonitor动态更新Prometheus Server的监控对象</li>
+<li>Prometheus Server: 即Prometheus服务端, kube-prometheus使用专门的Prometheus资源(一种特殊的Deployment)来部署Prometheus Server</li>
+</ol>
+<h2 id="部署kube-prometheus"><a href="#部署kube-prometheus" class="headerlink" title="部署kube-prometheus"></a>部署kube-prometheus</h2><p>部署kube-prometheus其实比较简单, 但有几个注意点</p>
+<h3 id="添加标签"><a href="#添加标签" class="headerlink" title="添加标签"></a>添加标签</h3><p>首先, 查看自己节点的标签, 特别关注<code>os=linux</code>这一标签:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_1_15_centos ~]<span class="comment"># kubectl describe node|grep 'os=linux'</span></span><br><span class="line">                    beta.kubernetes.io/os=linux</span><br><span class="line">                    beta.kubernetes.io/os=linux</span><br><span class="line">                    beta.kubernetes.io/os=linux</span><br></pre></td></tr></table></figure>
+
+<p>如上, 目前TKE所分配的标签为<code>beta.kubernetes.io/os=linux</code>, 但是kube-prometheus是通过<code>kubernetes.io/os=linux</code>这一标签来选择节点的</p>
+<p>如果没有更改标签的话, 部署kube-prometheus会无法分配Pod:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_1_15_centos ~]# kubectl describe pod -n monitoring alertmanager-main-2</span><br><span class="line">Name:           alertmanager-main-2</span><br><span class="line">Namespace:      monitoring</span><br><span class="line">Node:           &lt;none&gt;</span><br><span class="line">Labels:         alertmanager=main</span><br><span class="line">                app=alertmanager</span><br><span class="line">                controller-revision-hash=alertmanager-main-54678877fc</span><br><span class="line">                statefulset.kubernetes.io/pod-name=alertmanager-main-2</span><br><span class="line">Status:         Pending</span><br><span class="line">Node-Selectors:  kubernetes.io/os=linux</span><br><span class="line">Tolerations:     &lt;none&gt;</span><br><span class="line">Events:</span><br><span class="line">  Type     Reason            Age                From               Message</span><br><span class="line">  ----     ------            ----               ----               -------</span><br><span class="line">  Warning  FailedScheduling  18s (x2 over 18s)  default-scheduler  0/3 nodes are available: 3 node(s) didn&apos;t match node selector.</span><br></pre></td></tr></table></figure>
+
+<p>因此需要修改所有节点的配置文件, 添加<code>kubernetes.io/os=linux</code>标签:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl patch node 172.16.1.15 --patch=&apos;&#123;&quot;metadata&quot;:&#123;&quot;labels&quot;:&#123;&quot;kubernetes.io/os&quot;:&quot;linux&quot;&#125;&#125;&#125;&apos;</span><br></pre></td></tr></table></figure>
+
+<h3 id="下载镜像"><a href="#下载镜像" class="headerlink" title="下载镜像"></a>下载镜像</h3><p>总所周知, 国内访问不了谷歌, 因此需要在每个节点提前下载好需要的镜像:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker pull siriuszg/addon-resizer:1.8.4</span><br><span class="line">docker tag siriuszg/addon-resizer:1.8.4 k8s.gcr.io/addon-resizer:1.8.4</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装kube-prometheus"><a href="#安装kube-prometheus" class="headerlink" title="安装kube-prometheus"></a>安装kube-prometheus</h3><p>kube-prometheus项目托管在github, 直接下载源码即可: <a href="https://github.com/coreos/kube-prometheus/archive/master.zip" target="_blank" rel="noopener">https://github.com/coreos/kube-prometheus/archive/master.zip</a></p>
+<p>解压后, 进入<code>kube-prometheus-master</code>文件夹, 执行如下命令应用<code>manifests</code>子文件夹的所有k8s配置文件:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_1_15_centos kube-prometheus-master]# kubectl apply -f manifests/</span><br></pre></td></tr></table></figure>
+
+<p>可能由于创建先后问题, 中途会报错already exists, 这样的话执行两遍即可</p>
+<p>查看创建后Pod:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_1_15_centos kube-prometheus-master]# kubectl get -n monitoring pod</span><br><span class="line">NAME                                   READY   STATUS    RESTARTS   AGE</span><br><span class="line">alertmanager-main-0                    2/2     Running   0          3h35m</span><br><span class="line">alertmanager-main-1                    2/2     Running   0          27m</span><br><span class="line">alertmanager-main-2                    2/2     Running   0          27m</span><br><span class="line">grafana-768574c465-6gqbd               1/1     Running   0          3h35m</span><br><span class="line">kube-state-metrics-7b9c4f59b4-2x5t2    4/4     Running   4          3h35m</span><br><span class="line">node-exporter-m7rjp                    2/2     Running   0          14m</span><br><span class="line">prometheus-adapter-599685dbc-vml7h     1/1     Running   0          3h35m</span><br><span class="line">prometheus-k8s-0                       3/3     Running   3          3h35m</span><br><span class="line">prometheus-k8s-1                       3/3     Running   1          3h35m</span><br><span class="line">prometheus-operator-66bbf6b5b7-r24x8   1/1     Running   0          3h36m</span><br></pre></td></tr></table></figure>
+
+<p>这时, kube-prometheus就创建成功了, 查看使用的Service:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_1_15_centos kube-prometheus-master]# kubectl get -n monitoring svc</span><br><span class="line">NAME                    TYPE           CLUSTER-IP        EXTERNAL-IP      PORT(S)             AGE</span><br><span class="line">alertmanager-main       ClusterIP      192.168.255.251   &lt;none&gt;           9093/TCP            3h36m</span><br><span class="line">alertmanager-operated   ClusterIP      None              &lt;none&gt;           9093/TCP,6783/TCP   3h36m</span><br><span class="line">grafana                 ClusterIP      192.168.255.114   &lt;none&gt;           80:30461/TCP        3h36m</span><br><span class="line">kube-state-metrics      ClusterIP      None              &lt;none&gt;           8443/TCP,9443/TCP   3h36m</span><br><span class="line">node-exporter           ClusterIP      None              &lt;none&gt;           9100/TCP            3h36m</span><br><span class="line">prometheus-adapter      ClusterIP      192.168.255.178   &lt;none&gt;           443/TCP             3h36m</span><br><span class="line">prometheus-k8s          ClusterIP      192.168.255.7     &lt;none&gt;           9090/TCP            3h36m</span><br><span class="line">prometheus-operated     ClusterIP      None              &lt;none&gt;           9090/TCP            3h36m</span><br><span class="line">prometheus-operator     ClusterIP      None              &lt;none&gt;           8080/TCP            3h36m</span><br></pre></td></tr></table></figure>
+
+<p>要注意其中<code>prometheus-k8s</code>是Prometheus的服务端, <code>grafana</code>则是可视化工具</p>
+<h3 id="访问grafana"><a href="#访问grafana" class="headerlink" title="访问grafana"></a>访问grafana</h3><p>其实现在在集群中已经可以访问grafana了, 如需提供外网访问, 可使用TKE提供公网访问</p>
+<p>打开容器服务的控制台, 查看Service:</p>
+<p><img src="%E5%85%AC%E7%BD%91%E8%AE%BF%E9%97%AEgrafana.png" alt="公网访问grafana"></p>
+<p>在<code>更新访问方式</code>页面中, 选择提供公网访问:</p>
+<p><img src="%E5%85%AC%E7%BD%91%E8%AE%BF%E9%97%AEgrafana2.png" alt="公网访问grafana2"></p>
+<p>更新后, 即可通过获得的公网IP访问grafana</p>
+<p>然后, 需要在grafana中提供数据源, 即prometheus服务端的地址:</p>
+<p><img src="%E8%AE%BF%E9%97%AEgrafana.png" alt="访问grafana"><br><img src="%E8%AE%BF%E9%97%AEgrafana2.png" alt="访问grafana2"><br><img src="%E8%AE%BF%E9%97%AEgrafana3.png" alt="访问grafana3"></p>
+<p>最后, 即可看到k8s集群中的各种数据:</p>
+<p><img src="%E7%9B%91%E6%8E%A7k8s.png" alt="监控k8s"><br><img src="%E7%9B%91%E6%8E%A7k8s2.png" alt="监控k8s2"></p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><ul>
+<li>Prometheus Operator可能是目前功能最全面的Kubernetes开源监控方案. 除了能够监控Node和Pod, 还支持集群的各种管理组件, 比如API Server, Scheduler, Controller Manager等</li>
+<li>该笔记仅仅记录了Prometheus在k8s上的安装, 实际上Prometheus还可以定制监控指标, 设置报警等等</li>
+<li>kube-prometheus还可以通过helm安装, 腾讯云目前还没有helm的镜像源, 个人helm源也处于实验中, 因此目前还是通过应用配置文件安装最为快捷</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/容器/" rel="tag"># 容器</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/09/乱序-洗牌算法/" rel="next" title="乱序算法">
+                <i class="fa fa-chevron-left"></i> 乱序算法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/11/阶乘末尾零的个数/" rel="prev" title="阶乘末尾零的个数">
+                阶乘末尾零的个数 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="staight">
+            
+              <p class="site-author-name" itemprop="name">staight</p>
+              <p class="site-description motion-element" itemprop="description">keep it simple and stupid</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">57</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是Prometheus"><span class="nav-number">1.</span> <span class="nav-text">什么是Prometheus</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是kube-prometheus"><span class="nav-number">2.</span> <span class="nav-text">什么是kube-prometheus</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署kube-prometheus"><span class="nav-number">3.</span> <span class="nav-text">部署kube-prometheus</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#添加标签"><span class="nav-number">3.1.</span> <span class="nav-text">添加标签</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#下载镜像"><span class="nav-number">3.2.</span> <span class="nav-text">下载镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装kube-prometheus"><span class="nav-number">3.3.</span> <span class="nav-text">安装kube-prometheus</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#访问grafana"><span class="nav-number">3.4.</span> <span class="nav-text">访问grafana</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结"><span class="nav-number">4.</span> <span class="nav-text">小结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">staight</span>
+
+  
+</div>
+
+
+
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a></div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

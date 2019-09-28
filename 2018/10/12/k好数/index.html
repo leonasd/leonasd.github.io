@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="算法,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="这是一道想了好久的题…在用贫瘠的脑袋想了半天后我决定查看网上的解法–依旧想了半天.最后,我决定用博客记录下这道题的思路 题目12345678910111213141516171819问题描述  如果一个自然数N的K进制表示中任意的相邻的两位都不是相邻的数字，那么我们就说这个数是K好数。求L位K进制数中K好数的数目。例如K = 4，L = 2的时候，所有K好数为11、13、20、22、30、31、3">
+<meta name="keywords" content="算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="k好数">
+<meta property="og:url" content="https://staight.github.io/2018/10/12/k好数/index.html">
+<meta property="og:site_name" content="staight">
+<meta property="og:description" content="这是一道想了好久的题…在用贫瘠的脑袋想了半天后我决定查看网上的解法–依旧想了半天.最后,我决定用博客记录下这道题的思路 题目12345678910111213141516171819问题描述  如果一个自然数N的K进制表示中任意的相邻的两位都不是相邻的数字，那么我们就说这个数是K好数。求L位K进制数中K好数的数目。例如K = 4，L = 2的时候，所有K好数为11、13、20、22、30、31、3">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-09-27T14:18:27.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="k好数">
+<meta name="twitter:description" content="这是一道想了好久的题…在用贫瘠的脑袋想了半天后我决定查看网上的解法–依旧想了半天.最后,我决定用博客记录下这道题的思路 题目12345678910111213141516171819问题描述  如果一个自然数N的K进制表示中任意的相邻的两位都不是相邻的数字，那么我们就说这个数是K好数。求L位K进制数中K好数的数目。例如K = 4，L = 2的时候，所有K好数为11、13、20、22、30、31、3">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://staight.github.io/2018/10/12/k好数/">
+
+
+
+
+
+  <title>k好数 | staight</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">staight</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sundries">
+          <a href="/sundries/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>
+            
+            Sundries
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://staight.github.io/2018/10/12/k好数/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="staight">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="staight">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">k好数</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-12T09:59:39+08:00">
+                2018-10-12
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Post modified&#58;</span>
+              
+              <time title="Post modified" itemprop="dateModified" datetime="2019-09-27T22:18:27+08:00">
+                2019-09-27
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这是一道想了好久的题…在用贫瘠的脑袋想了半天后我决定查看网上的解法–依旧想了半天.最后,我决定用博客记录下这道题的思路</p>
+<h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">问题描述</span><br><span class="line">  如果一个自然数N的K进制表示中任意的相邻的两位都不是相邻的数字，那么我们就说这个数是K好数。求L位K进制数中K好数的数目。例如K = 4，L = 2的时候，所有K好数为11、13、20、22、30、31、33 共7个。由于这个数目很大，请你输出它对1000000007取模后的值。</span><br><span class="line"></span><br><span class="line">输入格式</span><br><span class="line">  输入包含两个正整数，K和L。</span><br><span class="line"></span><br><span class="line">输出格式</span><br><span class="line">  输出一个整数，表示答案对1000000007取模后的值。</span><br><span class="line"></span><br><span class="line">样例输入</span><br><span class="line">  4 2</span><br><span class="line">样例输出</span><br><span class="line">  7</span><br><span class="line">数据规模与约定</span><br><span class="line">  对于30%的数据，K^L &lt;= 106；</span><br><span class="line"></span><br><span class="line">  对于50%的数据，K &lt;= 16， L &lt;= 10；</span><br><span class="line"></span><br><span class="line">  对于100%的数据，1 &lt;= K,L &lt;= 100。</span><br></pre></td></tr></table></figure>
+
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>这道题的标准解法–动态规划</p>
+<h3 id="L-1"><a href="#L-1" class="headerlink" title="L=1"></a>L=1</h3><p>先思考最简单的一种情况:L=1,即一位数的情况</p>
+<p>此时,2进制的数只有<code>1</code>这一种可能;3进制的数有<code>1 2</code>这两种可能.以此类推…K进制的数有<code>K-1</code>种可能.很容易理解</p>
+<table>
+<thead>
+<tr>
+<th>L\K</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>…</th>
+<th>可能数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>2</td>
+<td>…</td>
+<td>K-1</td>
+</tr>
+</tbody></table>
+<h3 id="L-2"><a href="#L-2" class="headerlink" title="L=2"></a>L=2</h3><p>那么如果L=2呢?这时就要考虑多位数间是否符合关系了</p>
+<p>为了简单起见,我们假设新添加的一位永远是最左边的一位,即<code>最高位</code>,并且使用穷举法(滑稽)</p>
+<p>假设进制K=4.当最高位为1时,右边的数值可能为<code>1 3</code>;当最高位为2时,右边的数值可能为<code>0 2</code>;当最高位为3时,右边的数值可能是<code>0 1 3</code>.因此当L=2,K=4时,总共有3种可能</p>
+<table>
+<thead>
+<tr>
+<th align="center">最高位</th>
+<th align="center">可能情况</th>
+<th align="center">可能数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">0</td>
+<td align="center">00 02 03</td>
+<td align="center">3</td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td align="center">11 13</td>
+<td align="center">2</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">20 22</td>
+<td align="center">2</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">30 31 33</td>
+<td align="center">3</td>
+</tr>
+</tbody></table>
+<p>总可能数为2+2+3=7种(最高位不为0因此不计在内,但之后有用)</p>
+<h3 id="L-3"><a href="#L-3" class="headerlink" title="L=3"></a>L=3</h3><p>再进一步,让位数L=3,并仍假设进制K=4</p>
+<p>当最高位为1时,右边的数值可能为<code>1 3</code>,因此右边的数可能为<code>11 13 30 31 33</code>;以此类推…</p>
+<p>不难发现,最高位为1时,它的可能数和L=2时的可能数相关.不妨设位数为i,最高位为j,可能数为(i,j).那么(i,j)=(i-1,j1)+(i-1,j2)+…+(i-1,jn),jn是与j不相邻的数字</p>
+<table>
+<thead>
+<tr>
+<th align="center">最高位</th>
+<th align="center">可能情况</th>
+<th align="center">方法</th>
+<th align="center">可能数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">111 113 130 131 133</td>
+<td align="center">(2,1)+(2,3)</td>
+<td align="center">5</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">200 202 203 220 222</td>
+<td align="center">(2,0)+(2,2)</td>
+<td align="center">5</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">300 302 303 311 313 330 331 333</td>
+<td align="center">(2,0)+(2,1)+(2,3)</td>
+<td align="center">8</td>
+</tr>
+</tbody></table>
+<p>因此总可能数为5+5+8=18</p>
+<p>由于可能数的值均由前一项可能数推导而来,那么很容易想到用动态规划来做这道题</p>
+<h3 id="L-i"><a href="#L-i" class="headerlink" title="L=i"></a>L=i</h3><p>思路理清后,我们来重新审视一遍这道题–设位数为i,最高位的数值为j,最高位为j时的可能性为(i,j).那么可以得到<code>(i,j)=(i-1,j1)+(i-1,j2)+...+(i-1,jn),jn是与j不相邻的数字</code></p>
+<p>L=2,K=4的结果如下表格:</p>
+<table>
+<thead>
+<tr>
+<th>i\j/(i,j)</th>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>2</td>
+<td>(1,0)+(1,2)+(1,3)=3</td>
+<td>(1,1)+(1,3)=2</td>
+<td>(1,0)+(1,2)=2</td>
+<td>(1,0)+(1,1)+(1,3)=3</td>
+</tr>
+</tbody></table>
+<p>由上图,因为最高位可能为1,2,3,所以当L=2,K=4时总可能数为(2,1)+(2,2)+(2,3)=7</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">kgood</span><span class="params">(<span class="keyword">int</span> K, <span class="keyword">int</span> L)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//表示最高位为j时的可能数</span></span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">long</span>&gt; path(K, <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; L - <span class="number">1</span>; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//tmp数组,用于更新path数组的值</span></span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">long</span>&gt; tmp(K, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; K; j++)</span><br><span class="line">            <span class="comment">//从0至K循环,并判断是否有效</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> x = <span class="number">0</span>; x &lt; K; x++)</span><br><span class="line">                <span class="keyword">if</span> (j + <span class="number">1</span> != x &amp;&amp; j - <span class="number">1</span> != x)</span><br><span class="line">                &#123;</span><br><span class="line">                    tmp[j] += path[x];</span><br><span class="line">                    tmp[j] %= <span class="number">1000000007</span>;</span><br><span class="line">                &#125;</span><br><span class="line">        path.assign(tmp.begin(), tmp.end());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//从下标1开始累加,计算总可能数</span></span><br><span class="line">    <span class="keyword">long</span> sum = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; path.size(); i++)</span><br><span class="line">    &#123;</span><br><span class="line">        sum += path[i];</span><br><span class="line">        sum %= <span class="number">1000000007</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="感想"><a href="#感想" class="headerlink" title="感想"></a>感想</h2><p>如果我自己想的话怎么都不可能想出来的,也许这就是我和算法大佬之间的差距吧-.-就我这智商不指望在算法领域能有什么成就了,只能当一个入门者了orz</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/算法/" rel="tag"># 算法</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/05/静态库与共享库/" rel="next" title="静态库与共享库">
+                <i class="fa fa-chevron-left"></i> 静态库与共享库
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/10/30/arch关闭响铃/" rel="prev" title="arch关闭响铃">
+                arch关闭响铃 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="staight">
+            
+              <p class="site-author-name" itemprop="name">staight</p>
+              <p class="site-description motion-element" itemprop="description">keep it simple and stupid</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">57</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#题目"><span class="nav-number">1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#思路"><span class="nav-number">2.</span> <span class="nav-text">思路</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#L-1"><span class="nav-number">2.1.</span> <span class="nav-text">L=1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#L-2"><span class="nav-number">2.2.</span> <span class="nav-text">L=2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#L-3"><span class="nav-number">2.3.</span> <span class="nav-text">L=3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#L-i"><span class="nav-number">2.4.</span> <span class="nav-text">L=i</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码"><span class="nav-number">3.</span> <span class="nav-text">代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#感想"><span class="nav-number">4.</span> <span class="nav-text">感想</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">staight</span>
+
+  
+</div>
+
+
+
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a></div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

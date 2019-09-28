@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="容器,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="重拾博客，光是配置hexo环境就花了一下午，于是萌生了容器化hexo环境的念头。 构建docker镜像有两种方式：Dockerfile构建和commit构建。一开始就写Dockerfile的话很可能会出问题，也不好排查，因此先使用commit构建测试。 commit构建1. 下载node镜像1234567891011121314[root@staight ~]# docker pull nodeU">
+<meta name="keywords" content="容器">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hexo-next容器化">
+<meta property="og:url" content="https://staight.github.io/2019/08/26/hexo-next容器化/index.html">
+<meta property="og:site_name" content="staight">
+<meta property="og:description" content="重拾博客，光是配置hexo环境就花了一下午，于是萌生了容器化hexo环境的念头。 构建docker镜像有两种方式：Dockerfile构建和commit构建。一开始就写Dockerfile的话很可能会出问题，也不好排查，因此先使用commit构建测试。 commit构建1. 下载node镜像1234567891011121314[root@staight ~]# docker pull nodeU">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://staight.github.io/2019/08/26/hexo-next容器化/%E6%B5%8F%E8%A7%88%E5%99%A8%E6%95%88%E6%9E%9C.png">
+<meta property="og:updated_time" content="2019-09-27T14:18:27.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="hexo-next容器化">
+<meta name="twitter:description" content="重拾博客，光是配置hexo环境就花了一下午，于是萌生了容器化hexo环境的念头。 构建docker镜像有两种方式：Dockerfile构建和commit构建。一开始就写Dockerfile的话很可能会出问题，也不好排查，因此先使用commit构建测试。 commit构建1. 下载node镜像1234567891011121314[root@staight ~]# docker pull nodeU">
+<meta name="twitter:image" content="https://staight.github.io/2019/08/26/hexo-next容器化/%E6%B5%8F%E8%A7%88%E5%99%A8%E6%95%88%E6%9E%9C.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://staight.github.io/2019/08/26/hexo-next容器化/">
+
+
+
+
+
+  <title>hexo-next容器化 | staight</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">staight</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sundries">
+          <a href="/sundries/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>
+            
+            Sundries
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://staight.github.io/2019/08/26/hexo-next容器化/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="staight">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="staight">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">hexo-next容器化</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-08-26T15:47:02+08:00">
+                2019-08-26
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Post modified&#58;</span>
+              
+              <time title="Post modified" itemprop="dateModified" datetime="2019-09-27T22:18:27+08:00">
+                2019-09-27
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>重拾博客，光是配置hexo环境就花了一下午，于是萌生了容器化hexo环境的念头。</p>
+<p>构建docker镜像有两种方式：Dockerfile构建和commit构建。一开始就写Dockerfile的话很可能会出问题，也不好排查，因此先使用commit构建测试。</p>
+<h2 id="commit构建"><a href="#commit构建" class="headerlink" title="commit构建"></a>commit构建</h2><h3 id="1-下载node镜像"><a href="#1-下载node镜像" class="headerlink" title="1. 下载node镜像"></a>1. 下载node镜像</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[root@staight ~]# docker pull node</span><br><span class="line">Using default tag: latest</span><br><span class="line">latest: Pulling from library/node</span><br><span class="line">9cc2ad81d40d: Pull complete </span><br><span class="line">e6cb98e32a52: Pull complete </span><br><span class="line">ae1b8d879bad: Pull complete </span><br><span class="line">42cfa3699b05: Pull complete </span><br><span class="line">053cac798c4e: Pull complete </span><br><span class="line">e11ff976ff71: Pull complete </span><br><span class="line">6e754155fada: Pull complete </span><br><span class="line">32d7c2fdf415: Pull complete </span><br><span class="line">7acfea3f0d48: Pull complete </span><br><span class="line">Digest: sha256:b524cc1b5a7f5626fc8196886b81e29b1879051471a5a4a9e8101f3132c22a09</span><br><span class="line">Status: Downloaded newer image for node:latest</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-进入node容器"><a href="#2-进入node容器" class="headerlink" title="2. 进入node容器"></a>2. 进入node容器</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@staight ~]# docker run -it node bash</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-部署环境"><a href="#3-部署环境" class="headerlink" title="3. 部署环境"></a>3. 部署环境</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">root@9d276cb770e2:/# npm config set registry https://registry.npm.taobao.org</span><br><span class="line">root@9d276cb770e2:/# npm install hexo-cli -g</span><br><span class="line">root@9d276cb770e2:/# npm install --save hexo-helper-live2d</span><br><span class="line">root@9d276cb770e2:/# npm install --save live2d-widget-model-wanko</span><br><span class="line">root@9d276cb770e2:/# npm install https://github.com/CodeFalling/hexo-asset-image --save</span><br><span class="line">root@9d276cb770e2:/# hexo init /hexo</span><br><span class="line">root@9d276cb770e2:/# cd /hexo</span><br><span class="line">root@9d276cb770e2:/hexo# git clone https://github.com/iissnan/hexo-theme-next themes/next</span><br><span class="line">root@9d276cb770e2:/hexo# echo &apos;SOME_CONFIG...&apos; &gt; /hexo/_config.yml</span><br><span class="line">root@9d276cb770e2:/hexo# echo &apos;SOME_CONFIG...&apos; &gt; /hexo/themes/next/_config.yml</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-测试"><a href="#4-测试" class="headerlink" title="4. 测试"></a>4. 测试</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">root@9d276cb770e2:/hexo# hexo g</span><br><span class="line">INFO  Start processing</span><br><span class="line">INFO  Files loaded in 170 ms</span><br><span class="line">INFO  Generated: index.html</span><br><span class="line">...</span><br><span class="line">INFO  32 files generated in 811 ms</span><br></pre></td></tr></table></figure>
+
+<p>测试成功</p>
+<h2 id="Dockerfile编写"><a href="#Dockerfile编写" class="headerlink" title="Dockerfile编写"></a>Dockerfile编写</h2><p>首先，我们先创建一个专门的文件夹，存放Dockerfile、hexo配置文件，next主题配置文件，作为博客的source文件夹以及作为输出的public文件夹：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@staight hexo]# ls</span><br><span class="line">_config.yml  Dockerfile  next_config.yml  public  source</span><br></pre></td></tr></table></figure>
+
+<p>编写配置文件：</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[root@staight hexo]<span class="comment"># cat Dockerfile </span></span><br><span class="line"><span class="keyword">FROM</span> node:latest</span><br><span class="line"><span class="keyword">LABEL</span><span class="bash"> author=staight</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> npm config <span class="built_in">set</span> registry https://registry.npm.taobao.org &amp;&amp; \</span></span><br><span class="line"><span class="bash">npm install hexo-cli -g &amp;&amp; \</span></span><br><span class="line"><span class="bash">npm install --save hexo-helper-live2d &amp;&amp; \</span></span><br><span class="line"><span class="bash">npm install live2d-widget-model-wanko &amp;&amp; \</span></span><br><span class="line"><span class="bash">npm install --save https://github.com/CodeFalling/hexo-asset-image &amp;&amp; \</span></span><br><span class="line"><span class="bash">hexo init /hexo &amp;&amp; <span class="built_in">cd</span> /hexo &amp;&amp; \</span></span><br><span class="line"><span class="bash">git <span class="built_in">clone</span> https://github.com/iissnan/hexo-theme-next themes/next</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="bash"> /hexo</span></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> _config.yml _config.yml</span></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> next_config.yml themes/next/_config.yml</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">ENTRYPOINT</span><span class="bash"> hexo g</span></span><br></pre></td></tr></table></figure>
+
+<p>构建镜像：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@staight hexo]# docker build -t hexo-next:1.0 .</span><br></pre></td></tr></table></figure>
+
+<p>运行新出炉的hexo-next容器：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -v /root/hexo/source:/hexo/source -v /root/hexo/public:/hexo/public hexo-next:1.0</span><br></pre></td></tr></table></figure>
+
+<p>查看public目录，可以看到生成了html静态文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@staight hexo]# ls public/</span><br><span class="line">2018  2019  archives  css  images  index.html  js  lib  page  sundries  tags</span><br></pre></td></tr></table></figure>
+
+<p>运行nginx容器：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -v /root/hexo/public:/usr/share/nginx/html -p 80:80 nginx</span><br></pre></td></tr></table></figure>
+
+<p>最后，查看浏览器：</p>
+<p><img src="%E6%B5%8F%E8%A7%88%E5%99%A8%E6%95%88%E6%9E%9C.png" alt="浏览器效果"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/容器/" rel="tag"># 容器</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/07/linux资源管理器-cgroups理解/" rel="next" title="linux资源管理器--cgroups理解">
+                <i class="fa fa-chevron-left"></i> linux资源管理器--cgroups理解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/09/乱序-洗牌算法/" rel="prev" title="乱序算法">
+                乱序算法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="staight">
+            
+              <p class="site-author-name" itemprop="name">staight</p>
+              <p class="site-description motion-element" itemprop="description">keep it simple and stupid</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">57</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#commit构建"><span class="nav-number">1.</span> <span class="nav-text">commit构建</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-下载node镜像"><span class="nav-number">1.1.</span> <span class="nav-text">1. 下载node镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-进入node容器"><span class="nav-number">1.2.</span> <span class="nav-text">2. 进入node容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-部署环境"><span class="nav-number">1.3.</span> <span class="nav-text">3. 部署环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-测试"><span class="nav-number">1.4.</span> <span class="nav-text">4. 测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dockerfile编写"><span class="nav-number">2.</span> <span class="nav-text">Dockerfile编写</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">staight</span>
+
+  
+</div>
+
+
+
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a></div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
