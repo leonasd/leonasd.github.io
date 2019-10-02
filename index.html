@@ -259,6 +259,426 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://staight.github.io/2019/10/02/容器实现-namespace/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="staight">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="staight">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/10/02/容器实现-namespace/" itemprop="url">容器实现-namespace</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-10-02T20:28:57+08:00">
+                2019-10-02
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Post modified&#58;</span>
+              
+              <time title="Post modified" itemprop="dateModified" datetime="2019-10-03T00:37:11+08:00">
+                2019-10-03
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          前言最近一直在看Kubernetes有关的知识，自认为对于k8s已经有了较深的理解，且在处理客户问题中也积累了相当多的排错经验。不过，在处理k8s相关问题时，我感觉到有几个知识点是我比较欠缺的，没有掌握的：
+
+容器：即容器本身的问题，而非容器编排引擎的问题。比如说如下的案例：
+使用kubectl d
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/10/02/容器实现-namespace/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://staight.github.io/2019/09/29/kubernetes中多用户的实践/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="staight">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="staight">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/09/29/kubernetes中多用户的实践/" itemprop="url">kubernetes中多用户的实践</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-09-29T17:28:29+08:00">
+                2019-09-29
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Post modified&#58;</span>
+              
+              <time title="Post modified" itemprop="dateModified" datetime="2019-10-03T01:49:48+08:00">
+                2019-10-03
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          有时候需要多个用户共用一个集群，这种情况需要为其分配一个新的用户；为了集群的安全性还需要限制新用户的权限范围；多个用户难免会有资源竞争的情况，这时还需要限制其资源使用。
+Kubernetes提供了一系列机制以满足多用户的使用，包括多用户，鉴权，命名空间，资源限制等等。
+接下来将创建一个名为staig
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/09/29/kubernetes中多用户的实践/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://staight.github.io/2019/09/29/kubernetes中的访问控制-准入控制/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="staight">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="staight">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/09/29/kubernetes中的访问控制-准入控制/" itemprop="url">kubernetes中的访问控制-准入控制</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-09-29T12:15:32+08:00">
+                2019-09-29
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Post modified&#58;</span>
+              
+              <time title="Post modified" itemprop="dateModified" datetime="2019-10-03T01:49:48+08:00">
+                2019-10-03
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          简介在进行用户认证和权限授予后，apiserver就会查询/修改etcd存储，以完成请求。
+不过光是完成认证和授权似乎还有些不足：比如说Pod的yaml配置文件设置拉取镜像策略为IfNotPresent，但是如果出于Pod版本保持更新的考虑，想要让每个Pod都强制重新拉取镜像，而非不存在时再拉取，这
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/09/29/kubernetes中的访问控制-准入控制/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://staight.github.io/2019/09/27/kubernetes中的访问控制-权限授予/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -306,8 +726,8 @@
               
                 <span class="post-meta-item-text">Post modified&#58;</span>
               
-              <time title="Post modified" itemprop="dateModified" datetime="2019-09-27T22:18:27+08:00">
-                2019-09-27
+              <time title="Post modified" itemprop="dateModified" datetime="2019-10-03T01:49:48+08:00">
+                2019-10-03
               </time>
             
           </span>
@@ -344,9 +764,10 @@
           
           kubernetes中访问控制的第一道关卡是用户认证，接下来来到第二道关卡：权限授予。
 
+
 API请求的内容在讨论权限授予之前，我们先看看发送至apiserver的请求中，包含了哪些内容。
 示例：获取test命名空间的名为test的pod的信息
-123456789101112[root@node1 .
+123456789101112[root@node1 
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -448,8 +869,8 @@ API请求的内容在讨论权限授予之前，我们先看看发送至apiserve
               
                 <span class="post-meta-item-text">Post modified&#58;</span>
               
-              <time title="Post modified" itemprop="dateModified" datetime="2019-09-27T22:18:27+08:00">
-                2019-09-27
+              <time title="Post modified" itemprop="dateModified" datetime="2019-10-03T01:49:48+08:00">
+                2019-10-03
               </time>
             
           </span>
@@ -488,10 +909,11 @@ API请求的内容在讨论权限授予之前，我们先看看发送至apiserve
 在k8s中，客户端对API Server访问的大体流程如下：
 
 那么，这篇主要讲讲访问控制的第一步：用户认证。
+
 用户简介在k8s中，用户具有如下基础属性：
 
 用户名：标识用户的字符串
-UID：标识
+UID：标
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -593,8 +1015,8 @@ UID：标识
               
                 <span class="post-meta-item-text">Post modified&#58;</span>
               
-              <time title="Post modified" itemprop="dateModified" datetime="2019-09-27T22:18:27+08:00">
-                2019-09-27
+              <time title="Post modified" itemprop="dateModified" datetime="2019-10-03T01:49:48+08:00">
+                2019-10-03
               </time>
             
           </span>
@@ -736,8 +1158,8 @@ deployment如
               
                 <span class="post-meta-item-text">Post modified&#58;</span>
               
-              <time title="Post modified" itemprop="dateModified" datetime="2019-09-27T22:18:27+08:00">
-                2019-09-27
+              <time title="Post modified" itemprop="dateModified" datetime="2019-10-03T01:49:48+08:00">
+                2019-10-03
               </time>
             
           </span>
@@ -876,8 +1298,8 @@ deployment如
               
                 <span class="post-meta-item-text">Post modified&#58;</span>
               
-              <time title="Post modified" itemprop="dateModified" datetime="2019-09-27T22:18:27+08:00">
-                2019-09-27
+              <time title="Post modified" itemprop="dateModified" datetime="2019-10-03T01:49:48+08:00">
+                2019-10-03
               </time>
             
           </span>
@@ -1016,8 +1438,8 @@ ReplicaSet的前身是ReplicationController，现已废弃，ReplicaSet在select
               
                 <span class="post-meta-item-text">Post modified&#58;</span>
               
-              <time title="Post modified" itemprop="dateModified" datetime="2019-09-27T22:18:27+08:00">
-                2019-09-27
+              <time title="Post modified" itemprop="dateModified" datetime="2019-10-03T01:49:48+08:00">
+                2019-10-03
               </time>
             
           </span>
@@ -1155,8 +1577,8 @@ ReplicaSet的前身是ReplicationController，现已废弃，ReplicaSet在select
               
                 <span class="post-meta-item-text">Post modified&#58;</span>
               
-              <time title="Post modified" itemprop="dateModified" datetime="2019-09-27T22:18:27+08:00">
-                2019-09-27
+              <time title="Post modified" itemprop="dateModified" datetime="2019-10-03T01:49:48+08:00">
+                2019-10-03
               </time>
             
           </span>
@@ -1202,427 +1624,6 @@ ReplicaSet的前身是ReplicationController，现已废弃，ReplicaSet在select
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2019/09/20/event日志查询工具/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://staight.github.io/2019/09/18/configmap热更新/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="staight">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="staight">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/09/18/configmap热更新/" itemprop="url">configmap热更新</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-09-18T09:55:02+08:00">
-                2019-09-18
-              </time>
-            
-
-            
-              <span class="post-meta-divider">|</span>
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-check-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Post modified&#58;</span>
-              
-              <time title="Post modified" itemprop="dateModified" datetime="2019-09-27T22:18:27+08:00">
-                2019-09-27
-              </time>
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          简介configmap是Kubernetes中的一个资源对象，用来存储键值对数据，往往是配置信息，可以理解为整个命名空间的/etc目录。
-configmap可用于环境变量，命令行参数和挂载数据卷。值得一提的是，configmap还具备热更新的功能，接下来就让我们实践下吧。
-热更新实践首先，创建一个测
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/09/18/configmap热更新/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://staight.github.io/2019/09/16/在k8s上部署elasticsearch/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="staight">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="staight">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/09/16/在k8s上部署elasticsearch/" itemprop="url">在k8s上部署elasticsearch</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-09-16T17:04:26+08:00">
-                2019-09-16
-              </time>
-            
-
-            
-              <span class="post-meta-divider">|</span>
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-check-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Post modified&#58;</span>
-              
-              <time title="Post modified" itemprop="dateModified" datetime="2019-09-27T22:18:27+08:00">
-                2019-09-27
-              </time>
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          前言一直对分布式应用如何在k8s上运行感到困惑：节点如何发现集群，并加入集群呢？直到今天尝试在k8s上部署elasticsearch，方才略窥一二。
-背景es有几个常见参数：
-
-cluster.name：集群名称，只有集群名称相同的节点才可加入同一个集群。
-node.name：节点名称，表示集群内的
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/09/16/在k8s上部署elasticsearch/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://staight.github.io/2019/09/12/metrics-server浅谈/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="staight">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="staight">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/09/12/metrics-server浅谈/" itemprop="url">metrics-server浅谈</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-09-12T22:17:35+08:00">
-                2019-09-12
-              </time>
-            
-
-            
-              <span class="post-meta-divider">|</span>
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-check-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Post modified&#58;</span>
-              
-              <time title="Post modified" itemprop="dateModified" datetime="2019-09-27T22:18:27+08:00">
-                2019-09-27
-              </time>
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          是什么Metrics-Server是集群核心监控数据的聚合器。通俗地说，它存储了集群中各节点的监控数据，并且提供了API以供分析和使用。
-Metrics-Server在Kubernetes集群中表现为一个Deployment对象。不过准确地说，它是Deployment，Service，Cluster
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/09/12/metrics-server浅谈/#more" rel="contents">
               Read more &raquo;
             </a>
           </div>
@@ -1712,7 +1713,7 @@ Metrics-Server在Kubernetes集群中表现为一个Deployment对象。不过准�
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">57</span>
+                  <span class="site-state-item-count">60</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>

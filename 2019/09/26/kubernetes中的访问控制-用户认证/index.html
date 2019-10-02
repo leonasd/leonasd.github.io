@@ -86,20 +86,20 @@
 
 
 
-<meta name="description" content="工作时遇到了如何在容器服务中添加用户，管理单独的namespace的问题，经过一番研究，在此记录下来。 在k8s中，客户端对API Server访问的大体流程如下：  那么，这篇主要讲讲访问控制的第一步：用户认证。 用户简介在k8s中，用户具有如下基础属性：  用户名：标识用户的字符串 UID：标识用户的数字 组：即用户组，包含若干个用户 额外字段：其他信息  看起来和Linux中的系统用户一模一">
+<meta name="description" content="工作时遇到了如何在容器服务中添加用户，管理单独的namespace的问题，经过一番研究，在此记录下来。 在k8s中，客户端对API Server访问的大体流程如下：  那么，这篇主要讲讲访问控制的第一步：用户认证。  用户简介在k8s中，用户具有如下基础属性：  用户名：标识用户的字符串 UID：标识用户的数字 组：即用户组，包含若干个用户 额外字段：其他信息  看起来和Linux中的系统用户一模">
 <meta name="keywords" content="容器">
 <meta property="og:type" content="article">
 <meta property="og:title" content="kubernetes中的访问控制-用户认证">
 <meta property="og:url" content="https://staight.github.io/2019/09/26/kubernetes中的访问控制-用户认证/index.html">
 <meta property="og:site_name" content="staight">
-<meta property="og:description" content="工作时遇到了如何在容器服务中添加用户，管理单独的namespace的问题，经过一番研究，在此记录下来。 在k8s中，客户端对API Server访问的大体流程如下：  那么，这篇主要讲讲访问控制的第一步：用户认证。 用户简介在k8s中，用户具有如下基础属性：  用户名：标识用户的字符串 UID：标识用户的数字 组：即用户组，包含若干个用户 额外字段：其他信息  看起来和Linux中的系统用户一模一">
+<meta property="og:description" content="工作时遇到了如何在容器服务中添加用户，管理单独的namespace的问题，经过一番研究，在此记录下来。 在k8s中，客户端对API Server访问的大体流程如下：  那么，这篇主要讲讲访问控制的第一步：用户认证。  用户简介在k8s中，用户具有如下基础属性：  用户名：标识用户的字符串 UID：标识用户的数字 组：即用户组，包含若干个用户 额外字段：其他信息  看起来和Linux中的系统用户一模">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://staight.github.io/2019/09/26/kubernetes中的访问控制-用户认证/apiserver%E8%AE%BF%E9%97%AE%E6%B5%81%E7%A8%8B.png">
 <meta property="og:image" content="https://staight.github.io/2019/09/26/kubernetes中的访问控制-用户认证/kubeconfig%E7%BB%93%E6%9E%84.png">
-<meta property="og:updated_time" content="2019-09-27T14:18:27.000Z">
+<meta property="og:updated_time" content="2019-10-02T17:49:48.441Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes中的访问控制-用户认证">
-<meta name="twitter:description" content="工作时遇到了如何在容器服务中添加用户，管理单独的namespace的问题，经过一番研究，在此记录下来。 在k8s中，客户端对API Server访问的大体流程如下：  那么，这篇主要讲讲访问控制的第一步：用户认证。 用户简介在k8s中，用户具有如下基础属性：  用户名：标识用户的字符串 UID：标识用户的数字 组：即用户组，包含若干个用户 额外字段：其他信息  看起来和Linux中的系统用户一模一">
+<meta name="twitter:description" content="工作时遇到了如何在容器服务中添加用户，管理单独的namespace的问题，经过一番研究，在此记录下来。 在k8s中，客户端对API Server访问的大体流程如下：  那么，这篇主要讲讲访问控制的第一步：用户认证。  用户简介在k8s中，用户具有如下基础属性：  用户名：标识用户的字符串 UID：标识用户的数字 组：即用户组，包含若干个用户 额外字段：其他信息  看起来和Linux中的系统用户一模">
 <meta name="twitter:image" content="https://staight.github.io/2019/09/26/kubernetes中的访问控制-用户认证/apiserver%E8%AE%BF%E9%97%AE%E6%B5%81%E7%A8%8B.png">
 
 
@@ -308,8 +308,8 @@
               
                 <span class="post-meta-item-text">Post modified&#58;</span>
               
-              <time title="Post modified" itemprop="dateModified" datetime="2019-09-27T22:18:27+08:00">
-                2019-09-27
+              <time title="Post modified" itemprop="dateModified" datetime="2019-10-03T01:49:48+08:00">
+                2019-10-03
               </time>
             
           </span>
@@ -346,6 +346,7 @@
 <p>在k8s中，客户端对API Server访问的大体流程如下：</p>
 <p><img src="apiserver%E8%AE%BF%E9%97%AE%E6%B5%81%E7%A8%8B.png" alt="apiserver访问流程"></p>
 <p>那么，这篇主要讲讲访问控制的第一步：用户认证。</p>
+<hr>
 <h2 id="用户简介"><a href="#用户简介" class="headerlink" title="用户简介"></a>用户简介</h2><p>在k8s中，用户具有如下基础属性：</p>
 <ul>
 <li>用户名：标识用户的字符串</li>
@@ -354,12 +355,14 @@
 <li>额外字段：其他信息</li>
 </ul>
 <p>看起来和Linux中的系统用户一模一样。。。不过基本上只需要关心用户名。</p>
+<hr>
 <h2 id="用户分类"><a href="#用户分类" class="headerlink" title="用户分类"></a>用户分类</h2><p>在Kubernetes中，用户分为两类：</p>
 <ul>
 <li>普通用户（normal user）：为Pod外的程序设计，比如说kubectl命令。</li>
 <li>service account：为Pod设计，方便Pod调用Kubernetes API。</li>
 </ul>
 <p>这两类用户本质上并没有区别，只是service account的用户名类似于<code>system:serviceaccount:test:default</code>，表示在test命名空间的叫做default的用户。</p>
+<hr>
 <h2 id="认证策略"><a href="#认证策略" class="headerlink" title="认证策略"></a>认证策略</h2><p>当然不能直接输入用户名就可以访问集群的各个资源，k8s主要有如下几种认证策略：</p>
 <ul>
 <li>HTTP基本身份认证</li>
@@ -405,6 +408,7 @@
 <p>service account使用该token进行验证，其用户名为<code>system:serviceaccount:(NAMESPACE):(SERVICEACCOUNT)</code>，被指定到组<code>system:serviceaccounts</code>和<code>system:serviceaccounts:(NAMESPACE)</code>。</p>
 <p>Service Account Token的认证方式也不需要apiserver有预定用户表，可以在运行过程中动态添加service account。</p>
 <p>另外，Service Account Token中的token是JWT（JSON Web Token），感兴趣的可以看看这篇文章：<a href="http://www.ruanyifeng.com/blog/2018/07/json_web_token-tutorial.html" target="_blank" rel="noopener">http://www.ruanyifeng.com/blog/2018/07/json_web_token-tutorial.html</a>。</p>
+<hr>
 <h2 id="kubectl的认证方式"><a href="#kubectl的认证方式" class="headerlink" title="kubectl的认证方式"></a>kubectl的认证方式</h2><p>kubectl命令支持如上所有认证方式，其通过kubeconfig配置文件来存储和apiserver的通信方式以及认证所需要的数据，该文件往往存储于<code>~/.kube/config</code>中。</p>
 <p>kubeconfig文件结构：</p>
 <p><img src="kubeconfig%E7%BB%93%E6%9E%84.png" alt="kubeconfig结构"></p>
@@ -421,6 +425,7 @@
 <p>该文件定义了名为kubernetes的cluster，名为test的user，名为kubernetes的context将cluster和user组合起来，最后当前使用的是名为kubernetes的context。</p>
 <p>除了token外，还可以添加<code>client-certificate-data</code>和<code>client-key-data</code>字段表示使用客户端证书认证方式；添加<code>username</code>和<code>password</code>字段表示使用HTTP基本身份认证。</p>
 <p>此外，kubectl提供了config子命令执行对kubeconfig相关的操作，比如<code>kubectl config view</code>查看当前使用的kubeconfig。</p>
+<hr>
 <h2 id="kubectl使用Service-Account-Token"><a href="#kubectl使用Service-Account-Token" class="headerlink" title="kubectl使用Service Account Token"></a>kubectl使用Service Account Token</h2><p>看到这里，是不是有个疑问：Service Account Token是Service Account的通信方式，kubectl这个外部程序怎么使用？</p>
 <p>然而经测试后确实能够使用。。。这反而说明了普通用户和service account本质上并没有区别。</p>
 <p>实现方式很简单：</p>
@@ -438,11 +443,13 @@
 
 <p>报错<code>system:serviceaccount:test:test</code>无权限，说明成功切换至test命名空间的名为test的service account，测试成功~</p>
 <p>光是切换用户不行，还需要为该用户添加权限，该功能需要涉及k8s的权限控制功能，将在下一篇中讲解。</p>
+<hr>
 <h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><ul>
 <li>k8s中的用户分为两类，分别为普通用户和service account。</li>
 <li>k8s分为多种用户认证策略，包括HTTP基本身份认证，bearer token认证，客户端证书认证，Service Account Token认证等等</li>
 <li>kubectl命令使用kubeconfig配置文件来完成对apiserver的通信，其中包含了通信方式和认证信息。</li>
 </ul>
+<hr>
 <h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p>Kubernetes 中的用户与身份认证授权：<a href="https://jimmysong.io/kubernetes-handbook/guide/authentication.html" target="_blank" rel="noopener">https://jimmysong.io/kubernetes-handbook/guide/authentication.html</a></p>
 <p>kubernetes 中 kubeconfig 的用法：<a href="https://www.jianshu.com/p/99853cac56b8" target="_blank" rel="noopener">https://www.jianshu.com/p/99853cac56b8</a></p>
 
@@ -566,7 +573,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">57</span>
+                  <span class="site-state-item-count">60</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
