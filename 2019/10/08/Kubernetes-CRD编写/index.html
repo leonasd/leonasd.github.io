@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="容器,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前篇文章有说明了CRD用来创建自定义资源，不过，资源只是一些数据，真正想要让这些数据具备实际意义还需要围绕数据的操作。 在k8s中，数据称之为资源，比如说Namespace, ReplicaSet, Deployment等等，而对这些数据的操作则是通过控制器实现的，比如说namespace-controller，deployment-controller等等。 这些控制器由一个专门的组件管理，叫做">
+<meta name="keywords" content="容器">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kubernetes CRD编写">
+<meta property="og:url" content="https://staight.github.io/2019/10/08/Kubernetes-CRD编写/index.html">
+<meta property="og:site_name" content="staight">
+<meta property="og:description" content="前篇文章有说明了CRD用来创建自定义资源，不过，资源只是一些数据，真正想要让这些数据具备实际意义还需要围绕数据的操作。 在k8s中，数据称之为资源，比如说Namespace, ReplicaSet, Deployment等等，而对这些数据的操作则是通过控制器实现的，比如说namespace-controller，deployment-controller等等。 这些控制器由一个专门的组件管理，叫做">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-10-14T11:43:09.678Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kubernetes CRD编写">
+<meta name="twitter:description" content="前篇文章有说明了CRD用来创建自定义资源，不过，资源只是一些数据，真正想要让这些数据具备实际意义还需要围绕数据的操作。 在k8s中，数据称之为资源，比如说Namespace, ReplicaSet, Deployment等等，而对这些数据的操作则是通过控制器实现的，比如说namespace-controller，deployment-controller等等。 这些控制器由一个专门的组件管理，叫做">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://staight.github.io/2019/10/08/Kubernetes-CRD编写/">
+
+
+
+
+
+  <title>Kubernetes CRD编写 | staight</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">staight</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sundries">
+          <a href="/sundries/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>
+            
+            Sundries
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://staight.github.io/2019/10/08/Kubernetes-CRD编写/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="staight">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="staight">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Kubernetes CRD编写</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-10-08T19:51:52+08:00">
+                2019-10-08
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Post modified&#58;</span>
+              
+              <time title="Post modified" itemprop="dateModified" datetime="2019-10-14T19:43:09+08:00">
+                2019-10-14
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>前篇文章有说明了CRD用来创建自定义资源，不过，资源只是一些数据，真正想要让这些数据具备实际意义还需要围绕数据的操作。</p>
+<p>在k8s中，数据称之为资源，比如说<code>Namespace</code>, <code>ReplicaSet</code>, <code>Deployment</code>等等，而对这些数据的操作则是通过控制器实现的，比如说<code>namespace-controller</code>，<code>deployment-controller</code>等等。</p>
+<p>这些控制器由一个专门的组件管理，叫做<code>kube-controller-manager</code>，可以加上<code>--help</code>参数查看支持的控制器，目前有如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">attachdetach, bootstrapsigner, cloud-node-lifecycle, clusterrole-aggregation, cronjob, csrapproving, csrcleaner, csrsigning, daemonset, deployment, disruption, endpoint, endpointslice, garbagecollector, horizontalpodautoscaling, job, namespace, nodeipam, nodelifecycle, persistentvolume-binder, persistentvolume-expander, podgc, pv-protection, pvc-protection, replicaset, replicationcontroller, resourcequota, root-ca-cert-publisher, route, service, serviceaccount, serviceaccount-token, statefulset, tokencleaner, ttl, ttl-after-finished</span><br></pre></td></tr></table></figure>
+
+<p>这些控制器的实现方式简单来说，就是每隔一段时间通过访问api-server查询资源的变化，以及进行相应的操作。自定义的资源没有默认的控制器，也能通过自己编写控制器以实现对资源的操作。</p>
+<p>那么，接下来就尝试编写一个CRD控制器吧，在这篇文章中，将尝试创建一个名为alpine的crd，该crd用来快速生成一个使用了alpine镜像的pod。</p>
+<p>代码已上传至github：<a href="https://github.com/staight/crd" target="_blank" rel="noopener">https://github.com/staight/crd</a></p>
+<h2 id="准备环境"><a href="#准备环境" class="headerlink" title="准备环境"></a>准备环境</h2><ul>
+<li>kubernetes：v1.16.1</li>
+<li>go：1.13.1</li>
+<li>kubebuilder：2.0.1</li>
+<li>kustomize：v3.2.3</li>
+</ul>
+<p>其中，Kubebuilder是Kubernetes SIGs（Special Interest Group，特别兴趣小组）的一个项目，它是一个基于CRD构建Kubernetes API的框架，使用它可以很方便地构建出CRD和其对应的控制器。下载地址：<a href="https://github.com/kubernetes-sigs/kubebuilder" target="_blank" rel="noopener">https://github.com/kubernetes-sigs/kubebuilder</a>。</p>
+<p>kustomize用于渲染资源配置模板，与helm类似，但主打灵活和小巧，以及。。。官方性=.=，以下是下载地址：<a href="https://github.com/kubernetes-sigs/kustomize" target="_blank" rel="noopener">https://github.com/kubernetes-sigs/kustomize</a>。</p>
+<p>注意需要将go，kubebuilder，kustomize放在环境变量中，且在<code>~/.kube/config</code>位置需要有访问kubernetes的kubeconfig配置文件。</p>
+<h2 id="创建项目"><a href="#创建项目" class="headerlink" title="创建项目"></a>创建项目</h2><p>该项目的位置：<code>/root/code/go/crd</code>。</p>
+<p>首先使用<code>go mod init</code>命令，表示在该文件夹中应使用go module：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@staight crd]# go mod init crd</span><br><span class="line">go: creating new go.mod: module crd</span><br></pre></td></tr></table></figure>
+
+<p>如果在大陆的话有许多模块下载不了，这时可以使用go的代理，用了都说好，下载速度贼快：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go env -w GOPROXY=https://goproxy.io,direct</span><br></pre></td></tr></table></figure>
+
+<p>接下来使用<code>kubebuilder init</code>命令初始化该项目，<code>--domian</code>指定自己想要使用的API Group，本例中使用的是<code>k8s.io</code>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@staight crd]# kubebuilder init --domain k8s.io</span><br><span class="line">go get sigs.k8s.io/controller-runtime@v0.2.2</span><br><span class="line">go: finding sigs.k8s.io v0.2.2</span><br><span class="line">go mod tidy</span><br><span class="line">go: downloading github.com/onsi/gomega v1.4.2</span><br><span class="line">...</span><br><span class="line">go: extracting gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7</span><br><span class="line">go: extracting cloud.google.com/go v0.26.0</span><br><span class="line">Running make...</span><br><span class="line">make</span><br><span class="line">/usr/bin/controller-gen object:headerFile=./hack/boilerplate.go.txt paths=&quot;./...&quot;</span><br><span class="line">go fmt ./...</span><br><span class="line">go vet ./...</span><br><span class="line">go build -o bin/manager main.go</span><br><span class="line">Next: Define a resource with:</span><br><span class="line">$ kubebuilder create api</span><br></pre></td></tr></table></figure>
+
+<p>可以看到该命令下载了一些依赖包，生成了众多文件，并使用<code>fmt</code>和<code>vet</code>做了格式化与静态检查。</p>
+<p>注：如果出现<code>which: no controller-gen</code>的错误，说明<code>$GOPATH/bin</code>不在<code>$PATH</code>环境变量中，此时将<code>$GOPATH/bin/controller-gen</code>程序放到<code>/bin/</code>目录即可，root用户的话是<code>/root/go/bin</code>。</p>
+<p>来看看init命令生成了什么：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">[root@staight crd]# tree</span><br><span class="line">.</span><br><span class="line">├── bin</span><br><span class="line">│   └── manager</span><br><span class="line">├── config</span><br><span class="line">│   ├── certmanager</span><br><span class="line">│   │   ├── certificate.yaml</span><br><span class="line">│   │   ├── kustomization.yaml</span><br><span class="line">│   │   └── kustomizeconfig.yaml</span><br><span class="line">│   ├── default</span><br><span class="line">│   │   ├── kustomization.yaml</span><br><span class="line">│   │   ├── manager_auth_proxy_patch.yaml</span><br><span class="line">│   │   ├── manager_prometheus_metrics_patch.yaml</span><br><span class="line">│   │   ├── manager_webhook_patch.yaml</span><br><span class="line">│   │   └── webhookcainjection_patch.yaml</span><br><span class="line">│   ├── manager</span><br><span class="line">│   │   ├── kustomization.yaml</span><br><span class="line">│   │   └── manager.yaml</span><br><span class="line">│   ├── rbac</span><br><span class="line">│   │   ├── auth_proxy_role_binding.yaml</span><br><span class="line">│   │   ├── auth_proxy_role.yaml</span><br><span class="line">│   │   ├── auth_proxy_service.yaml</span><br><span class="line">│   │   ├── kustomization.yaml</span><br><span class="line">│   │   ├── leader_election_role_binding.yaml</span><br><span class="line">│   │   ├── leader_election_role.yaml</span><br><span class="line">│   │   └── role_binding.yaml</span><br><span class="line">│   └── webhook</span><br><span class="line">│       ├── kustomization.yaml</span><br><span class="line">│       ├── kustomizeconfig.yaml</span><br><span class="line">│       └── service.yaml</span><br><span class="line">├── Dockerfile</span><br><span class="line">├── go.mod</span><br><span class="line">├── go.sum</span><br><span class="line">├── hack</span><br><span class="line">│   └── boilerplate.go.txt</span><br><span class="line">├── main.go</span><br><span class="line">├── Makefile</span><br><span class="line">└── PROJECT</span><br><span class="line"></span><br><span class="line">8 directories, 28 files</span><br></pre></td></tr></table></figure>
+
+<h2 id="创建API"><a href="#创建API" class="headerlink" title="创建API"></a>创建API</h2><p>使用<code>kubebuilder create api</code>命令创建一个api：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@staight crd]# kubebuilder create api --group staight --version v1 --kind Alpine</span><br><span class="line">Create Resource [y/n]</span><br><span class="line">y</span><br><span class="line">Create Controller [y/n]</span><br><span class="line">y</span><br><span class="line">Writing scaffold for you to edit...</span><br><span class="line">api/v1/alpine_types.go</span><br><span class="line">controllers/alpine_controller.go</span><br><span class="line">Running make...</span><br><span class="line">/usr/bin/controller-gen object:headerFile=./hack/boilerplate.go.txt paths=&quot;./...&quot;</span><br><span class="line">go fmt ./...</span><br><span class="line">go vet ./...</span><br><span class="line">go build -o bin/manager main.go</span><br></pre></td></tr></table></figure>
+
+<p>如上，创建了一个名为staight的group，version为v1，kind为Alpine。group+domain即为apiGroup，这里为<code>staight.k8s.io</code>。</p>
+<p>该命令同时创建两个文件：<code>api/v1/alpine_types.go</code>和<code>controllers/alpine_controller.go</code>。其中alpine_types定义了crd的类型，而alpine_controller则是该crd的控制器，该项目的主要工作就在这两个文件中进行。</p>
+<h2 id="编写API"><a href="#编写API" class="headerlink" title="编写API"></a>编写API</h2><p>查看<code>api/v1/alpine_types.go</code>文件：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// AlpineSpec defines the desired state of Alpine</span></span><br><span class="line"><span class="keyword">type</span> AlpineSpec <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="comment">// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster</span></span><br><span class="line">	<span class="comment">// Important: Run "make" to regenerate code after modifying this file</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// AlpineStatus defines the observed state of Alpine</span></span><br><span class="line"><span class="keyword">type</span> AlpineStatus <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="comment">// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster</span></span><br><span class="line">	<span class="comment">// Important: Run "make" to regenerate code after modifying this file</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// +kubebuilder:object:root=true</span></span><br><span class="line"><span class="comment">// +kubebuilder:subresource:status</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Alpine is the Schema for the alpines API</span></span><br><span class="line"><span class="keyword">type</span> Alpine <span class="keyword">struct</span> &#123;</span><br><span class="line">	metav1.TypeMeta   <span class="string">`json:",inline"`</span></span><br><span class="line">	metav1.ObjectMeta <span class="string">`json:"metadata,omitempty"`</span></span><br><span class="line"></span><br><span class="line">	Spec   AlpineSpec   <span class="string">`json:"spec,omitempty"`</span></span><br><span class="line">	Status AlpineStatus <span class="string">`json:"status,omitempty"`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// +kubebuilder:object:root=true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// AlpineList contains a list of Alpine</span></span><br><span class="line"><span class="keyword">type</span> AlpineList <span class="keyword">struct</span> &#123;</span><br><span class="line">	metav1.TypeMeta <span class="string">`json:",inline"`</span></span><br><span class="line">	metav1.ListMeta <span class="string">`json:"metadata,omitempty"`</span></span><br><span class="line">	Items           []Alpine <span class="string">`json:"items"`</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该文件定义了一个名为alpine的资源模板，先看<code>Alpine</code>结构：</p>
+<ul>
+<li>metav1.TypeMeta：描述了apiVersion和kind</li>
+<li>metav1.ObjectMeta：描述了namespace，name，label等信息</li>
+<li>Spec：指向了<code>AlpineSpec</code>结构，即资源配置中的Spec字段</li>
+<li>Status：指向了<code>AlpineStatus</code>结构，即资源配置中的Status字段</li>
+</ul>
+<p><code>AlpineSpec</code>结构定义了Alpine资源的细节，而<code>AlpineStatus</code>结构则定义了其状态，最后还有一个<code>AlpineList</code>结构，表示多个Alpine资源的集合，在同时获取多个Alpine资源时会用到，比如说使用<code>kubectl get pod</code>命令时实际上获取的就是PodList结构。</p>
+<p>由于我们只需要生成一个Pod，因此在AlpineSpec结构中定义alpineTemplate字段，表示pod模板，并设置<code>omitempty</code>表示允许为空，如果为空则创建默认的alpine模板（之后定义）。</p>
+<p>在AlpineStatus结构中定义active字段，用来存放其引用的pod：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// AlpineSpec defines the desired state of Alpine</span></span><br><span class="line"><span class="keyword">type</span> AlpineSpec <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="comment">// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster</span></span><br><span class="line">	<span class="comment">// Important: Run "make" to regenerate code after modifying this file</span></span><br><span class="line">	AlpineTemplate corev1.PodTemplate <span class="string">`json:alpineTemplate,omitempty`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// AlpineStatus defines the observed state of Alpine</span></span><br><span class="line"><span class="keyword">type</span> AlpineStatus <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="comment">// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster</span></span><br><span class="line">	<span class="comment">// Important: Run "make" to regenerate code after modifying this file</span></span><br><span class="line">	Active []corev1.ObjectReference <span class="string">`json:"active,omitempty"`</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>v1文件夹还包括两个文件：groupversion_info.go和zz_generated.deepcopy.go。</p>
+<p>这两个文件无需改动，不过需要简单说下它们的作用：</p>
+<p>groupversion_info.go：包括一些关于group-version的元数据。比如说这里的group为staight.k8s.io，version为v1<br>zz_generated.deepcopy.go：用于实施runtime.Object接口，表示上述资源。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// groupversion_info.go</span></span><br><span class="line"><span class="keyword">var</span> (</span><br><span class="line">	<span class="comment">// GroupVersion is group version used to register these objects</span></span><br><span class="line">	GroupVersion = schema.GroupVersion&#123;Group: <span class="string">"staight.k8s.io"</span>, Version: <span class="string">"v1"</span>&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// SchemeBuilder is used to add go types to the GroupVersionKind scheme</span></span><br><span class="line">	SchemeBuilder = &amp;scheme.Builder&#123;GroupVersion: GroupVersion&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// AddToScheme adds the types in this group-version to the given scheme.</span></span><br><span class="line">	AddToScheme = SchemeBuilder.AddToScheme</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h2 id="编写控制器"><a href="#编写控制器" class="headerlink" title="编写控制器"></a>编写控制器</h2><p>创建API时同时还创建了<code>controllers/alpine_controller.go</code>文件，可以在该文件中编写代码，以完成控制器的逻辑。</p>
+<p>本实例的目的较为简单：如果alpine资源有pod模板，则按照该模板创建pod；否则使用默认模板创建。</p>
+<p>首先，获取alpine资源对象，如果没有alpine资源对象则直接返回：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> alpine staightv1.Alpine</span><br><span class="line"><span class="keyword">if</span> err := r.Get(ctx, req.NamespacedName, &amp;alpine); err != <span class="literal">nil</span> &#123;</span><br><span class="line">	log.Error(err, <span class="string">"unable to fetch alpine"</span>)</span><br><span class="line">	<span class="keyword">return</span> ctrl.Result&#123;&#125;, ignoreNotFound(err)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后列出该alpine资源对象控制的所有pod：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> childPods corev1.PodList</span><br><span class="line"><span class="keyword">if</span> err := r.List(ctx, &amp;childPods, client.InNamespace(req.Namespace), client.MatchingField(podOwnerKey, req.Name)); err != <span class="literal">nil</span> &#123;</span><br><span class="line">	log.Error(err, <span class="string">"unable to list child pods"</span>)</span><br><span class="line">	<span class="keyword">return</span> ctrl.Result&#123;&#125;, err</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中，podOwnerKey是<code>.metadata.controller</code>字段，req.Name是alpine资源对象的名称。如果无法获取则返回。</p>
+<p>接着获取控制的pod的数量：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取控制pod的数量</span></span><br><span class="line">size := <span class="built_in">len</span>(childPods.Items)</span><br><span class="line">log.V(<span class="number">1</span>).Info(<span class="string">"pod count"</span>, <span class="string">"active pod"</span>, size)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 如果数量不为0，则直接返回</span></span><br><span class="line"><span class="keyword">if</span> size != <span class="number">0</span> &#123;</span><br><span class="line">	log.V(<span class="number">1</span>).Info(<span class="string">"has child pod, skip"</span>)</span><br><span class="line">	<span class="keyword">return</span> ctrl.Result&#123;&#125;, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果pod数量不为0，说明已经有了pod，直接返回。</p>
+<p>pod数量为0的话，则需要构建pod资源配置，准备创建pod：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 构造需要创建的pod：如果有pod模板，则使用pod模板创建；否则使用默认模板</span></span><br><span class="line">constructPodForAlpine := <span class="function"><span class="keyword">func</span><span class="params">(alpine *staightv1.Alpine)</span> <span class="params">(*corev1.Pod, error)</span></span> &#123;</span><br><span class="line">	scheduledTime := time.Now()</span><br><span class="line">	name := fmt.Sprintf(<span class="string">"%s-%d"</span>, alpine.Name, scheduledTime.Unix())</span><br><span class="line">	spec := podSpec</span><br><span class="line"></span><br><span class="line">	<span class="comment">// fmt.Printf("get alpine: %+v\n", alpine.Spec.PodTemplate.Spec)</span></span><br><span class="line">	<span class="comment">// fmt.Printf("default alpine: %+v\n", corev1.PodSpec&#123;&#125;)</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// 查看alpine资源是否有pod模板</span></span><br><span class="line">	<span class="keyword">if</span> !reflect.DeepEqual(alpine.Spec.PodTemplate.Spec, corev1.PodSpec&#123;&#125;) &#123;</span><br><span class="line">		log.V(<span class="number">1</span>).Info(<span class="string">"podSpec construct"</span>, <span class="string">"podSpec"</span>, <span class="string">"has podSpec"</span>)</span><br><span class="line">		spec = *alpine.Spec.PodTemplate.Spec.DeepCopy()</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 构造pod</span></span><br><span class="line">	pod := &amp;corev1.Pod&#123;</span><br><span class="line">		ObjectMeta: metav1.ObjectMeta&#123;</span><br><span class="line">			Namespace:   alpine.Namespace,</span><br><span class="line">			Name:        name,</span><br><span class="line">			Labels:      <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span>),</span><br><span class="line">			Annotations: <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span>),</span><br><span class="line">		&#125;,</span><br><span class="line">		Spec: spec,</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 将alpine资源的annotation和label复制到对应pod上</span></span><br><span class="line">	<span class="keyword">for</span> k, v := <span class="keyword">range</span> alpine.Spec.PodTemplate.Annotations &#123;</span><br><span class="line">		pod.Annotations[k] = v</span><br><span class="line">	&#125;</span><br><span class="line">	pod.Annotations[scheduledTimeAnnotation] = scheduledTime.Format(time.RFC3339)</span><br><span class="line">	<span class="keyword">for</span> k, v := <span class="keyword">range</span> alpine.Spec.PodTemplate.Labels &#123;</span><br><span class="line">		pod.Labels[k] = v</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 设置控制关系，实际上是给pod添加了.metadata.ownerReferences字段</span></span><br><span class="line">	<span class="keyword">if</span> err := ctrl.SetControllerReference(alpine, pod, r.Scheme); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> pod, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">pod, err := constructPodForAlpine(&amp;alpine)</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">	log.Error(err, <span class="string">"unable to construct pod from template"</span>)</span><br><span class="line">	<span class="keyword">return</span> ctrl.Result&#123;&#125;, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后，使用该pod模板创建pod：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建pod</span></span><br><span class="line"><span class="keyword">if</span> err := r.Create(ctx, pod); err != <span class="literal">nil</span> &#123;</span><br><span class="line">	log.Error(err, <span class="string">"unable to create pod for alpine"</span>, <span class="string">"pod"</span>, pod)</span><br><span class="line">	<span class="keyword">return</span> ctrl.Result&#123;&#125;, err</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">log.V(<span class="number">1</span>).Info(<span class="string">"create pod for alpine run"</span>, <span class="string">"pod"</span>, pod)</span><br></pre></td></tr></table></figure>
+
+<p>最后，还需要告诉reconciler只对具有<code>.metadata.ownerReferences</code>字段的pod感兴趣，其余资源的改动不会触发reconciler：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *AlpineReconciler)</span> <span class="title">SetupWithManager</span><span class="params">(mgr ctrl.Manager)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> err := mgr.GetFieldIndexer().IndexField(&amp;corev1.Pod&#123;&#125;, podOwnerKey, <span class="function"><span class="keyword">func</span><span class="params">(rawObj runtime.Object)</span> []<span class="title">string</span></span> &#123;</span><br><span class="line">		pod := rawObj.(*corev1.Pod)</span><br><span class="line">		owner := metav1.GetControllerOf(pod)</span><br><span class="line">		<span class="keyword">if</span> owner == <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> owner.APIVersion != apiGVstr || owner.Kind != <span class="string">"Alpine"</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> []<span class="keyword">string</span>&#123;owner.Name&#125;</span><br><span class="line">	&#125;); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> ctrl.NewControllerManagedBy(mgr).</span><br><span class="line">		For(&amp;staightv1.Alpine&#123;&#125;).</span><br><span class="line">		Owns(&amp;corev1.Pod&#123;&#125;).</span><br><span class="line">		Complete(r)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>代码完成！接下来赶紧测试下。</p>
+<h2 id="运行项目"><a href="#运行项目" class="headerlink" title="运行项目"></a>运行项目</h2><p>使用<code>make</code>命令更新对alpine资源的配置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@staight crd]# make</span><br><span class="line">/usr/bin/controller-gen object:headerFile=./hack/boilerplate.go.txt paths=&quot;./...&quot;</span><br><span class="line">go fmt ./...</span><br><span class="line">go vet ./...</span><br><span class="line">go build -o bin/manager main.go</span><br></pre></td></tr></table></figure>
+
+<p>然后使用<code>make install</code>命令在集群中创建对应的alpine资源，注意需要在<code>~/.kube/config</code>路径下的kubeconfig配置文件，以访问集群：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@staight crd]# make install</span><br><span class="line">/usr/bin/controller-gen &quot;crd:trivialVersions=true&quot; rbac:roleName=manager-role webhook paths=&quot;./...&quot; output:crd:artifacts:config=config/crd/bases</span><br><span class="line">kustomize build config/crd | kubectl apply -f -</span><br><span class="line">customresourcedefinition.apiextensions.k8s.io/alpines.staight.k8s.io created</span><br></pre></td></tr></table></figure>
+
+<p>此时crd资源已安装在集群中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 tmp]# kubectl get crd</span><br><span class="line">NAME                     CREATED AT</span><br><span class="line">alpines.staight.k8s.io   2019-10-13T20:09:31Z</span><br></pre></td></tr></table></figure>
+
+<p>最后，使用<code>make run</code>命令运行控制器：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@staight crd]# make run</span><br><span class="line">/usr/bin/controller-gen object:headerFile=./hack/boilerplate.go.txt paths=&quot;./...&quot;</span><br><span class="line">go fmt ./...</span><br><span class="line">go vet ./...</span><br><span class="line">/usr/bin/controller-gen &quot;crd:trivialVersions=true&quot; rbac:roleName=manager-role webhook paths=&quot;./...&quot; output:crd:artifacts:config=config/crd/bases</span><br><span class="line">go run ./main.go</span><br><span class="line">2019-10-14T04:12:16.682+0800    INFO    controller-runtime.metrics      metrics server is starting to listen    &#123;&quot;addr&quot;: &quot;:8080&quot;&#125;</span><br><span class="line">2019-10-14T04:12:16.684+0800    INFO    controller-runtime.controller   Starting EventSource    &#123;&quot;controller&quot;: &quot;alpine&quot;, &quot;source&quot;: &quot;kind source: /, Kind=&quot;&#125;</span><br><span class="line">2019-10-14T04:12:16.684+0800    INFO    controller-runtime.controller   Starting EventSource    &#123;&quot;controller&quot;: &quot;alpine&quot;, &quot;source&quot;: &quot;kind source: /, Kind=&quot;&#125;</span><br><span class="line">2019-10-14T04:12:16.685+0800    INFO    setup   starting manager</span><br><span class="line">2019-10-14T04:12:16.685+0800    INFO    controller-runtime.manager      starting metrics server &#123;&quot;path&quot;: &quot;/metrics&quot;&#125;</span><br><span class="line">2019-10-14T04:12:16.786+0800    INFO    controller-runtime.controller   Starting Controller     &#123;&quot;controller&quot;: &quot;alpine&quot;&#125;</span><br><span class="line">2019-10-14T04:12:16.886+0800    INFO    controller-runtime.controller   Starting workers        &#123;&quot;controller&quot;: &quot;alpine&quot;, &quot;worker count&quot;: 1&#125;</span><br></pre></td></tr></table></figure>
+
+<p>尝试创建一个没有pod模板的alpine资源：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 tmp]# cat alpine.yml </span><br><span class="line">apiVersion: staight.k8s.io/v1</span><br><span class="line">kind: Alpine</span><br><span class="line">metadata:</span><br><span class="line">  name: alpine</span><br><span class="line">[root@node1 tmp]# kubectl apply -f alpine.yml </span><br><span class="line">alpine.staight.k8s.io/alpine created</span><br></pre></td></tr></table></figure>
+
+<p>查看pod，可以看到新创建了一个名为<code>alpine-1570997556</code>的pod：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 tmp]# kubectl get pod</span><br><span class="line">NAME                     READY   STATUS    RESTARTS   AGE</span><br><span class="line">alpine-1570997556        1/1     Running   0          3m1s</span><br></pre></td></tr></table></figure>
+
+<p>创建成功，实验成功~</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>本文尝试使用kubebuilder编写了一个名为alpine的CRD，该CRD用来自动生成一个alpine的pod，或者使用模板生成pod。</p>
+<p>本示例功能较为简陋，但具备了CRD的基本功能。考虑到用户可能直接修改pod，更加健壮的做法可以像ReplicaSet一样，给Pod模板生成一个散列值，如果散列值不一致则说明pod被改动，重新生成。</p>
+<p>CRD + Controller = Operator，有兴趣的话可以看看OperatorHub：<a href="https://operatorhub.io/" target="_blank" rel="noopener">https://operatorhub.io/</a>。</p>
+<p>如果有报错：<code>&quot;error&quot;: &quot;the server could not find the requested resource</code>，说明没有添加一个特别的注释，需参考如下issue：<a href="https://github.com/kubernetes-sigs/kubebuilder/issues/751" target="_blank" rel="noopener">https://github.com/kubernetes-sigs/kubebuilder/issues/751</a>。</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p>The Kubebuilder Book：<a href="https://book.kubebuilder.io/" target="_blank" rel="noopener">https://book.kubebuilder.io/</a></p>
+<p>如何从零开始编写一个Kubernetes CRD：<a href="https://www.servicemesher.com/blog/kubernetes-crd-quick-start/" target="_blank" rel="noopener">https://www.servicemesher.com/blog/kubernetes-crd-quick-start/</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/容器/" rel="tag"># 容器</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/10/08/Kubernetes-CRD简介/" rel="next" title="Kubernetes CRD简介">
+                <i class="fa fa-chevron-left"></i> Kubernetes CRD简介
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="staight">
+            
+              <p class="site-author-name" itemprop="name">staight</p>
+              <p class="site-description motion-element" itemprop="description">keep it simple and stupid</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#准备环境"><span class="nav-number">1.</span> <span class="nav-text">准备环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建项目"><span class="nav-number">2.</span> <span class="nav-text">创建项目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建API"><span class="nav-number">3.</span> <span class="nav-text">创建API</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编写API"><span class="nav-number">4.</span> <span class="nav-text">编写API</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编写控制器"><span class="nav-number">5.</span> <span class="nav-text">编写控制器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运行项目"><span class="nav-number">6.</span> <span class="nav-text">运行项目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结"><span class="nav-number">7.</span> <span class="nav-text">小结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文档"><span class="nav-number">8.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">staight</span>
+
+  
+</div>
+
+
+
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a></div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
