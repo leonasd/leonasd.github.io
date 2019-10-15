@@ -2,138 +2,88 @@
 
 
 
-  
 
 
-<html class="theme-next mist use-motion" lang="zh-CN">
-<head><meta name="generator" content="Hexo 3.9.0">
+<html lang="zh-CN">
+<head>
   <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.4.1">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.1" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.1">
 
 
-
-  
-  
-    
-    
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2">
   <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
-  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
 
 
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.4.1',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
 
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform">
-<meta http-equiv="Cache-Control" content="no-siteapp">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
-
-
-
-
-
-
-
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
-
-<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
-
-
-
-
-
-  <meta name="keywords" content="运维,">
-
-
-
-
-
-
-
-
-
-
-<meta name="description" content="开坑k8s,估计这个暑假结束时能够较为粗浅的学完… k8s简介k8s的全称是kubernetes,它是一款能够自动化部署,扩展,管理容器化应用的开源容器编排引擎 kubernetes取名于舵手的希腊文(κυβερνήτης),它于2014年在谷歌宣布成立.k8s的发展与设计很大程度上都借鉴了博格(Borg)系统,这是谷歌内部使用了近十几年的容器编排引擎 经过容器三大编排引擎的竞争,k8s击败了Me">
+  <meta name="description" content="开坑k8s,估计这个暑假结束时能够较为粗浅的学完…k8s简介k8s的全称是kubernetes,它是一款能够自动化部署,扩展,管理容器化应用的开源容器编排引擎kubernetes取名于舵手的希腊文(κυβερνήτης),它于2014年在谷歌宣布成立.k8s的发展与设计很大程度上都借鉴了博格(Borg)系统,这是谷歌内部使用了近十几年的容器编排引擎">
 <meta name="keywords" content="运维">
 <meta property="og:type" content="article">
 <meta property="og:title" content="k8s知识点总结">
 <meta property="og:url" content="https://staight.github.io/2018/08/07/k8s知识点总结/index.html">
 <meta property="og:site_name" content="staight">
-<meta property="og:description" content="开坑k8s,估计这个暑假结束时能够较为粗浅的学完… k8s简介k8s的全称是kubernetes,它是一款能够自动化部署,扩展,管理容器化应用的开源容器编排引擎 kubernetes取名于舵手的希腊文(κυβερνήτης),它于2014年在谷歌宣布成立.k8s的发展与设计很大程度上都借鉴了博格(Borg)系统,这是谷歌内部使用了近十几年的容器编排引擎 经过容器三大编排引擎的竞争,k8s击败了Me">
+<meta property="og:description" content="开坑k8s,估计这个暑假结束时能够较为粗浅的学完…k8s简介k8s的全称是kubernetes,它是一款能够自动化部署,扩展,管理容器化应用的开源容器编排引擎kubernetes取名于舵手的希腊文(κυβερνήτης),它于2014年在谷歌宣布成立.k8s的发展与设计很大程度上都借鉴了博格(Borg)系统,这是谷歌内部使用了近十几年的容器编排引擎">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://staight.github.io/2018/08/07/k8s知识点总结/k8s%E6%9E%B6%E6%9E%84.png">
 <meta property="og:updated_time" content="2019-10-02T17:49:48.434Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="k8s知识点总结">
-<meta name="twitter:description" content="开坑k8s,估计这个暑假结束时能够较为粗浅的学完… k8s简介k8s的全称是kubernetes,它是一款能够自动化部署,扩展,管理容器化应用的开源容器编排引擎 kubernetes取名于舵手的希腊文(κυβερνήτης),它于2014年在谷歌宣布成立.k8s的发展与设计很大程度上都借鉴了博格(Borg)系统,这是谷歌内部使用了近十几年的容器编排引擎 经过容器三大编排引擎的竞争,k8s击败了Me">
+<meta name="twitter:description" content="开坑k8s,估计这个暑假结束时能够较为粗浅的学完…k8s简介k8s的全称是kubernetes,它是一款能够自动化部署,扩展,管理容器化应用的开源容器编排引擎kubernetes取名于舵手的希腊文(κυβερνήτης),它于2014年在谷歌宣布成立.k8s的发展与设计很大程度上都借鉴了博格(Borg)系统,这是谷歌内部使用了近十几年的容器编排引擎">
 <meta name="twitter:image" content="https://staight.github.io/2018/08/07/k8s知识点总结/k8s%E6%9E%B6%E6%9E%84.png">
-
-
-
-<script type="text/javascript" id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Mist',
-    version: '5.1.4',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
-    fancybox: true,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    duoshuo: {
-      userId: '0',
-      author: 'Author'
-    },
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
-
   <link rel="canonical" href="https://staight.github.io/2018/08/07/k8s知识点总结/">
 
 
-
-
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
 
   <title>k8s知识点总结 | staight</title>
   
@@ -145,192 +95,193 @@
 
 
 
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
-
-  
-  
-    
-  
-
-  <div class="container sidebar-position-left page-post-detail">
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta ">
-    
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
 
-    <div class="custom-logo-site-title">
+    <div>
       <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">staight</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
-      
-        <p class="site-subtitle"></p>
-      
   </div>
 
   <div class="site-nav-toggle">
-    <button>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
   </div>
 </div>
 
+
 <nav class="site-nav">
   
-
-  
-    <ul id="menu" class="menu">
+  <ul id="menu" class="menu">
       
+      
+        
         
         <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
-            
-            Home
-          </a>
-        </li>
       
-        
-        <li class="menu-item menu-item-tags">
-          <a href="/tags/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
-            
-            Tags
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-archives">
-          <a href="/archives/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
-            
-            Archives
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-sundries">
-          <a href="/sundries/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>
-            
-            Sundries
-          </a>
-        </li>
-      
-
-      
-    </ul>
-  
-
-  
-</nav>
-
-
-
- </div>
-    </header>
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
     
 
-  
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
 
-  
-  
-  
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-tags">
+      
+    
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-杂物">
+      
+    
+
+    <a href="/sundries/" rel="section"><i class="fa fa-fw fa-calendar"></i>杂物</a>
+
+  </li>
+      
+    
+  </ul>
+
+    
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/staight" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
   
   
-  
-  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://staight.github.io/2018/08/07/k8s知识点总结/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="staight">
-      <meta itemprop="description" content>
+      <meta itemprop="description" content="keep it simple and stupid">
       <meta itemprop="image" content="/images/avatar.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="staight">
     </span>
-
-    
       <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            k8s知识点总结
+            
 
-        
-        
-          <h1 class="post-title" itemprop="name headline">k8s知识点总结</h1>
-        
+          
+        </h1>
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
+              <span class="post-meta-item-text">发表于</span>
+
               
-                <span class="post-meta-item-text">Posted on</span>
+                
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-07T17:12:36+08:00">
-                2018-08-07
-              </time>
+
+              <time title="创建时间：2018-08-07 17:12:36" itemprop="dateCreated datePublished" datetime="2018-08-07T17:12:36+08:00">2018-08-07</time>
+            </span>
+          
             
 
             
-              <span class="post-meta-divider">|</span>
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-check-o"></i>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-10-03 01:49:48" itemprop="dateModified" datetime="2019-10-03T01:49:48+08:00">2019-10-03</time>
               </span>
-              
-                <span class="post-meta-item-text">Post modified&#58;</span>
-              
-              <time title="Post modified" itemprop="dateModified" datetime="2019-10-03T01:49:48+08:00">
-                2019-10-03
-              </time>
             
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
           
 
           
 
         </div>
       </header>
-    
 
     
     
@@ -338,12 +289,9 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
+        <p>开坑k8s,估计这个暑假结束时能够较为粗浅的学完…</p><h2 id="k8s简介"><a href="#k8s简介" class="headerlink" title="k8s简介"></a>k8s简介</h2><p>k8s的全称是kubernetes,它是一款能够自动化部署,扩展,管理容器化应用的开源容器编排引擎</p><p>kubernetes取名于舵手的希腊文(<code>κυβερνήτης</code>),它于2014年在谷歌宣布成立.k8s的发展与设计很大程度上都借鉴了博格(<code>Borg</code>)系统,这是谷歌内部使用了近十几年的容器编排引擎</p><a id="more"></a>
 
-      
-        <p>开坑k8s,估计这个暑假结束时能够较为粗浅的学完…</p>
-<h2 id="k8s简介"><a href="#k8s简介" class="headerlink" title="k8s简介"></a>k8s简介</h2><p>k8s的全称是kubernetes,它是一款能够自动化部署,扩展,管理容器化应用的开源容器编排引擎</p>
-<p>kubernetes取名于舵手的希腊文(<code>κυβερνήτης</code>),它于2014年在谷歌宣布成立.k8s的发展与设计很大程度上都借鉴了博格(<code>Borg</code>)系统,这是谷歌内部使用了近十几年的容器编排引擎</p>
+
 <p>经过容器三大编排引擎的竞争,k8s击败了Mesos和Docker Swarm,赢得了全面的胜利,成为了容器编排引擎的事实上的标准</p>
 <h2 id="k8s概念"><a href="#k8s概念" class="headerlink" title="k8s概念"></a>k8s概念</h2><h3 id="Cluster"><a href="#Cluster" class="headerlink" title="Cluster"></a>Cluster</h3><p>Cluster是计算,存储和网络资源的集合,Kubernetes利用这些资源运行各种基于容器的应用.Cluster包括Master和Node</p>
 <h3 id="Master"><a href="#Master" class="headerlink" title="Master"></a>Master</h3><p>Master是Cluster的大脑,它的主要职责是调度,即决定将应用放在哪里运行.Master运行Linux操作系统,可以是物理机或者虚拟机.为了实现高可用,可以运行多个Master</p>
@@ -608,212 +556,166 @@
 
 <h3 id="参数细节"><a href="#参数细节" class="headerlink" title="参数细节"></a>参数细节</h3><p>TYPE:pods|nodes|endpoints|events|namespaces|services|replicaSets|daemonSets|deployments</p>
 
-      
     </div>
-    
-    
-    
 
     
-
     
-
     
-
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/运维/" rel="tag"># 运维</a>
-          
-        </div>
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2018/08/04/ip协议详解/" rel="next" title="IP协议详解">
-                <i class="fa fa-chevron-left"></i> IP协议详解
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/08/11/进度条实现/" rel="prev" title="进度条实现">
-                进度条实现 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-
-    <div class="post-spread">
-      
-    </div>
-  </div>
-
-
-          </div>
-          
-
-
-          
-
-  
-
-
-
-        </div>
         
+      
+
+      <footer class="post-footer">
           
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/运维/" rel="tag"><i class="fa fa-tag"></i> 运维</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2018/08/04/ip协议详解/" rel="next" title="IP协议详解">
+                  <i class="fa fa-chevron-left"></i> IP协议详解
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2018/08/11/进度条实现/" rel="prev" title="进度条实现">
+                  进度条实现 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </article>
   
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
+  
+  
+
   </div>
 
-  <aside id="sidebar" class="sidebar">
-    
-    <div class="sidebar-inner">
 
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            Table of Contents
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            Overview
-          </li>
-        </ul>
-      
-
-      <section class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="staight">
-            
-              <p class="site-author-name" itemprop="name">staight</p>
-              <p class="site-description motion-element" itemprop="description">keep it simple and stupid</p>
           </div>
-
-          <nav class="site-state motion-element">
-
-            
-              <div class="site-state-item site-state-posts">
-              
-                <a href="/archives/">
-              
-                  <span class="site-state-item-count">66</span>
-                  <span class="site-state-item-name">posts</span>
-                </a>
-              </div>
-            
-
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-tags">
-                <a href="/tags/index.html">
-                  <span class="site-state-item-count">14</span>
-                  <span class="site-state-item-name">tags</span>
-                </a>
-              </div>
-            
-
-          </nav>
-
-          
-
-          
-
-          
-          
-
-          
-          
-
           
 
         </div>
-      </section>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
 
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
       
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
       <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s简介"><span class="nav-number">1.</span> <span class="nav-text">k8s简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s概念"><span class="nav-number">2.</span> <span class="nav-text">k8s概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Cluster"><span class="nav-number">2.1.</span> <span class="nav-text">Cluster</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Master"><span class="nav-number">2.2.</span> <span class="nav-text">Master</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Node"><span class="nav-number">2.3.</span> <span class="nav-text">Node</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pod"><span class="nav-number">2.4.</span> <span class="nav-text">Pod</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Controller"><span class="nav-number">2.5.</span> <span class="nav-text">Controller</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Service"><span class="nav-number">2.6.</span> <span class="nav-text">Service</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Namespace"><span class="nav-number">2.7.</span> <span class="nav-text">Namespace</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s架构"><span class="nav-number">3.</span> <span class="nav-text">k8s架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Master节点"><span class="nav-number">3.1.</span> <span class="nav-text">Master节点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#API-Server-kube-apiserver"><span class="nav-number">3.1.1.</span> <span class="nav-text">API Server(kube-apiserver)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Scheduler-kube-scheduler"><span class="nav-number">3.1.2.</span> <span class="nav-text">Scheduler(kube-scheduler)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Controller-Manager-kube-controller-manager"><span class="nav-number">3.1.3.</span> <span class="nav-text">Controller Manager(kube-controller-manager)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#etcd"><span class="nav-number">3.1.4.</span> <span class="nav-text">etcd</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Pod-网络"><span class="nav-number">3.1.5.</span> <span class="nav-text">Pod 网络</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Node节点"><span class="nav-number">3.2.</span> <span class="nav-text">Node节点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#kubelet"><span class="nav-number">3.2.1.</span> <span class="nav-text">kubelet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#kube-proxy"><span class="nav-number">3.2.2.</span> <span class="nav-text">kube-proxy</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Pod网络"><span class="nav-number">3.2.3.</span> <span class="nav-text">Pod网络</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s安装"><span class="nav-number">4.</span> <span class="nav-text">k8s安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s应用"><span class="nav-number">5.</span> <span class="nav-text">k8s应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#运行应用"><span class="nav-number">5.1.</span> <span class="nav-text">运行应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#访问Pod"><span class="nav-number">5.2.</span> <span class="nav-text">访问Pod</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#存储管理"><span class="nav-number">5.3.</span> <span class="nav-text">存储管理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#emptyDir"><span class="nav-number">5.3.1.</span> <span class="nav-text">emptyDir</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#hostPath-Volume"><span class="nav-number">5.3.2.</span> <span class="nav-text">hostPath Volume</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#外部-Storage-Provider"><span class="nav-number">5.3.3.</span> <span class="nav-text">外部 Storage Provider</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PersistentVolume-和-PersistentVolumeClaim"><span class="nav-number">5.3.4.</span> <span class="nav-text">PersistentVolume 和 PersistentVolumeClaim</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s应用配置文件示例"><span class="nav-number">6.</span> <span class="nav-text">k8s应用配置文件示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#deployment"><span class="nav-number">6.1.</span> <span class="nav-text">deployment</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#daemonset"><span class="nav-number">6.2.</span> <span class="nav-text">daemonset</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pod-1"><span class="nav-number">6.3.</span> <span class="nav-text">Pod</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#service"><span class="nav-number">6.4.</span> <span class="nav-text">service</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#job"><span class="nav-number">6.5.</span> <span class="nav-text">job</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s命令"><span class="nav-number">7.</span> <span class="nav-text">k8s命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基础命令"><span class="nav-number">7.1.</span> <span class="nav-text">基础命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#部署命令"><span class="nav-number">7.2.</span> <span class="nav-text">部署命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#集群管理命令"><span class="nav-number">7.3.</span> <span class="nav-text">集群管理命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#排错与调试命令"><span class="nav-number">7.4.</span> <span class="nav-text">排错与调试命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#高级命令"><span class="nav-number">7.5.</span> <span class="nav-text">高级命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置命令"><span class="nav-number">7.6.</span> <span class="nav-text">设置命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他命令"><span class="nav-number">7.7.</span> <span class="nav-text">其他命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数细节"><span class="nav-number">7.8.</span> <span class="nav-text">参数细节</span></a></li></ol></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
-
-
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s简介"><span class="nav-number">1.</span> <span class="nav-text">k8s简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s概念"><span class="nav-number">2.</span> <span class="nav-text">k8s概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Cluster"><span class="nav-number">2.1.</span> <span class="nav-text">Cluster</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Master"><span class="nav-number">2.2.</span> <span class="nav-text">Master</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Node"><span class="nav-number">2.3.</span> <span class="nav-text">Node</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pod"><span class="nav-number">2.4.</span> <span class="nav-text">Pod</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Controller"><span class="nav-number">2.5.</span> <span class="nav-text">Controller</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Service"><span class="nav-number">2.6.</span> <span class="nav-text">Service</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Namespace"><span class="nav-number">2.7.</span> <span class="nav-text">Namespace</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s架构"><span class="nav-number">3.</span> <span class="nav-text">k8s架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Master节点"><span class="nav-number">3.1.</span> <span class="nav-text">Master节点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#API-Server-kube-apiserver"><span class="nav-number">3.1.1.</span> <span class="nav-text">API Server(kube-apiserver)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Scheduler-kube-scheduler"><span class="nav-number">3.1.2.</span> <span class="nav-text">Scheduler(kube-scheduler)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Controller-Manager-kube-controller-manager"><span class="nav-number">3.1.3.</span> <span class="nav-text">Controller Manager(kube-controller-manager)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#etcd"><span class="nav-number">3.1.4.</span> <span class="nav-text">etcd</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Pod-网络"><span class="nav-number">3.1.5.</span> <span class="nav-text">Pod 网络</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Node节点"><span class="nav-number">3.2.</span> <span class="nav-text">Node节点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#kubelet"><span class="nav-number">3.2.1.</span> <span class="nav-text">kubelet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#kube-proxy"><span class="nav-number">3.2.2.</span> <span class="nav-text">kube-proxy</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Pod网络"><span class="nav-number">3.2.3.</span> <span class="nav-text">Pod网络</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s安装"><span class="nav-number">4.</span> <span class="nav-text">k8s安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s应用"><span class="nav-number">5.</span> <span class="nav-text">k8s应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#运行应用"><span class="nav-number">5.1.</span> <span class="nav-text">运行应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#访问Pod"><span class="nav-number">5.2.</span> <span class="nav-text">访问Pod</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#存储管理"><span class="nav-number">5.3.</span> <span class="nav-text">存储管理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#emptyDir"><span class="nav-number">5.3.1.</span> <span class="nav-text">emptyDir</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#hostPath-Volume"><span class="nav-number">5.3.2.</span> <span class="nav-text">hostPath Volume</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#外部-Storage-Provider"><span class="nav-number">5.3.3.</span> <span class="nav-text">外部 Storage Provider</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PersistentVolume-和-PersistentVolumeClaim"><span class="nav-number">5.3.4.</span> <span class="nav-text">PersistentVolume 和 PersistentVolumeClaim</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s应用配置文件示例"><span class="nav-number">6.</span> <span class="nav-text">k8s应用配置文件示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#deployment"><span class="nav-number">6.1.</span> <span class="nav-text">deployment</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#daemonset"><span class="nav-number">6.2.</span> <span class="nav-text">daemonset</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pod-1"><span class="nav-number">6.3.</span> <span class="nav-text">Pod</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#service"><span class="nav-number">6.4.</span> <span class="nav-text">service</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#job"><span class="nav-number">6.5.</span> <span class="nav-text">job</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s命令"><span class="nav-number">7.</span> <span class="nav-text">k8s命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基础命令"><span class="nav-number">7.1.</span> <span class="nav-text">基础命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#部署命令"><span class="nav-number">7.2.</span> <span class="nav-text">部署命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#集群管理命令"><span class="nav-number">7.3.</span> <span class="nav-text">集群管理命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#排错与调试命令"><span class="nav-number">7.4.</span> <span class="nav-text">排错与调试命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#高级命令"><span class="nav-number">7.5.</span> <span class="nav-text">高级命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置命令"><span class="nav-number">7.6.</span> <span class="nav-text">设置命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他命令"><span class="nav-number">7.7.</span> <span class="nav-text">其他命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数细节"><span class="nav-number">7.8.</span> <span class="nav-text">参数细节</span></a></li></ol></li></ol></div>
         
       </div>
-    </main>
+      <!--/noindex-->
 
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
-  <span class="with-love">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">staight</span>
-
-  
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.png"
+      alt="staight">
+  <p class="site-author-name" itemprop="name">staight</p>
+  <div class="site-description" itemprop="description">keep it simple and stupid</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
 </div>
 
 
 
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
 
 
+      </div>
+    </main>
 
-  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a></div>
+    <footer class="footer">
+      <div class="footer-inner">
+        
 
-
-
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">staight</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">
+      
+    主题 – <a href="https://mist.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.4.1
+  </div>
 
         
+
+
+
+
+
 
 
 
@@ -824,127 +726,19 @@
         
       </div>
     </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
-    
-
-    
-
   </div>
 
   
-
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
-
-
-
-
-
-
-
-
-
+    
   
+  <script color='0,255,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.1"></script><script src="/js/motion.js?v=7.4.1"></script>
+<script src="/js/schemes/muse.js?v=7.4.1"></script>
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
-  
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
-
-
-
-  
-  
-
-  
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  
-
-
-
-
-	
-
-
-
-
-
-  
-
-
+<script src="/js/next-boot.js?v=7.4.1"></script>
 
 
 
@@ -961,20 +755,14 @@
 
 
 
-  
 
 
 
 
 
-  
 
-  
 
-  
 
-  
-  
 
   
 
